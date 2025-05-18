@@ -1,11 +1,11 @@
 {
   "extensionDescription": {
     "description": "Extension description",
-    "message": "Chrome extension boilerplate developed with Vite, React and Typescript"
+    "message": "Yuchi's Crappy AI Extension"
   },
   "extensionName": {
     "description": "Extension name",
-    "message": "Chrome extension boilerplate"
+    "message": "Yuchi's Crappy AI Extension"
   },
   "toggleTheme": {
     "message": "Toggle theme"
