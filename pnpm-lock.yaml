@@ -138,6 +138,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@clerk/clerk-react':
+        specifier: ^5.31.4
+        version: 5.31.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@extension/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n

@@ -1,10 +1,20 @@
 import { useState } from 'react';
 import { Test } from '@/components/test';
+import { UserButton, SignInButton, SignedIn, SignedOut } from '@clerk/clerk-react';
+
 function App() {
   const [count, setCount] = useState(0);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
+      <header>
+        <SignedOut>
+          <SignInButton />
+        </SignedOut>
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
+      </header>
       <div className="bg-white p-8 rounded-lg shadow-md">
         <h1 className="text-2xl font-bold mb-4">Extension Web App</h1>
         <p className="mb-4">This is a separate web app that shares code with the extension.</p>
