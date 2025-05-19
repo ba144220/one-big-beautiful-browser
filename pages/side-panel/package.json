@@ -25,7 +25,13 @@
     "@extension/shared": "workspace:*",
     "@extension/storage": "workspace:*",
     "@extension/ui": "workspace:*",
-    "@tailwindcss/postcss": "^4.1.7"
+    "@radix-ui/react-slot": "^1.2.2",
+    "@tailwindcss/postcss": "^4.1.7",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.511.0",
+    "tailwind-merge": "^2.5.2",
+    "tw-animate-css": "^1.3.0"
   },
   "devDependencies": {
     "@extension/tailwindcss-config": "workspace:*",

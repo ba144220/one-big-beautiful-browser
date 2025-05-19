@@ -1,6 +1,7 @@
 import '@src/SidePanel.css';
 import { withErrorBoundary, withSuspense } from '@extension/shared';
 import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/chrome-extension';
+import { Button } from '@src/components/ui/button';
 
 const SidePanel = () => {
   return (
@@ -13,6 +14,7 @@ const SidePanel = () => {
           <UserButton />
         </SignedIn>
       </nav>
+      <Button>Click me</Button>
     </div>
   );
 };
