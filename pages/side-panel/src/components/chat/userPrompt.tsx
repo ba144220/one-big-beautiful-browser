@@ -3,7 +3,7 @@ import { Button } from '@src/components/ui/button';
 import { Textarea } from '@src/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@src/components/ui/select';
 import { Badge } from '@src/components/ui/badge';
-import { Send, Square, Paperclip } from 'lucide-react';
+import { Send, Square, Image } from 'lucide-react';
 
 type Mode = 'agent' | 'ask';
 type AIModel = 'claude-4' | 'chatgpt-4o' | 'gemini-2.5-pro';
@@ -157,7 +157,13 @@ export default function UserPrompt({ onSubmit, isLoading, onStop, context = [] }
             </Select>
 
             {/* Image Upload */}
-            <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageSelect} className="hidden" />
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/png, image/jpeg, image/jpg, image/gif, image/webp"
+              onChange={handleImageSelect}
+              className="hidden"
+            />
             <Button
               type="button"
               variant="ghost"
@@ -165,7 +171,7 @@ export default function UserPrompt({ onSubmit, isLoading, onStop, context = [] }
               onClick={() => fileInputRef.current?.click()}
               className="h-8 w-8 p-0 text-gray-500 hover:text-gray-700 hover:bg-gray-100 border border-gray-200 rounded-lg"
               title="Upload image">
-              <Paperclip className="h-4 w-4" />
+              <Image className="h-4 w-4" />
             </Button>
           </div>
 
