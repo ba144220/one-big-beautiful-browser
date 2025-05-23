@@ -20,21 +20,3 @@ export type GetTabViewById = {
 };
 
 export type InterruptType = GetTabViewById | GetAllTabsInfo | GetActiveTabView;
-
-type ImageDetail = 'auto' | 'low' | 'high';
-type MessageContentImageUrl = {
-  type: 'image_url';
-  image_url:
-    | string
-    | {
-        url: string;
-        detail?: ImageDetail | undefined;
-      };
-};
-type MessageContentText = {
-  type: 'text';
-  text: string;
-};
-type MessageContentComplex = MessageContentText | MessageContentImageUrl;
-
-export type MessageContent = string | MessageContentComplex[];
