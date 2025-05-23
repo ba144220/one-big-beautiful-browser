@@ -1,12 +1,21 @@
 import { useStream } from '@langchain/langgraph-sdk/react';
 import type { Message } from '@langchain/langgraph-sdk';
 import { MessageContainer } from '../components/chat/message-container';
+import useInterrupt from '../hooks/useInterrupt';
+import type { InterruptType } from '@extension/shared';
 export default function Chatroom() {
-  const thread = useStream<{ messages: Message[] }>({
+  const thread = useStream<
+    { messages: Message[] },
+    {
+      InterruptType: InterruptType;
+    }
+  >({
     apiUrl: 'http://localhost:2024',
     assistantId: 'agent',
     messagesKey: 'messages',
   });
+
+  useInterrupt(thread);
 
   return (
     <div className="h-full flex flex-col">
@@ -39,6 +48,12 @@ export default function Chatroom() {
             Send
           </button>
         )}
+        <button
+          onClick={() => {
+            console.log(thread.messages);
+          }}>
+          See Messages
+        </button>
       </form>
     </div>
   );

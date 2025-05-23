@@ -15,5 +15,8 @@
     "@langchain/langgraph": "^0.2.72",
     "@langchain/langgraph-cli": "^0.0.37",
     "zod": "^3.25.9"
+  },
+  "devDependencies": {
+    "@extension/shared": "workspace:*"
   }
 }
