@@ -29,7 +29,7 @@ const manifest = {
   },
   version: packageJson.version,
   description: '__MSG_extensionDescription__',
-  host_permissions: ['http://localhost/*', `${process.env.CEB_CLERK_FRONTEND_API}/*`],
+  host_permissions: [`<all_urls>`],
   permissions: ['storage', 'scripting', 'tabs', 'notifications', 'sidePanel', 'cookies'],
   action: {
     default_icon: 'icon-34.png',
