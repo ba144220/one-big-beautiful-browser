@@ -1,5 +1,6 @@
-import { type InterruptType, type MessageContent } from '@extension/shared';
+import { type InterruptType } from '@extension/shared';
 import { getTabView, getAllTabsInfo } from './tools';
+import type { MessageContent } from '@langchain/langgraph-sdk';
 
 export async function handleInterrupt(interruptValue: InterruptType): Promise<MessageContent> {
   switch (interruptValue.name) {
