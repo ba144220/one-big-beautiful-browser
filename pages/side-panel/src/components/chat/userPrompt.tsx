@@ -101,32 +101,15 @@ export default function UserPrompt({ onSubmit, isLoading, onStop, context = [] }
 
       <form onSubmit={handleSubmit} className="p-4">
         {/* Main Input Area */}
-        <div className="relative">
+        <div>
           <Textarea
             name="message"
             placeholder="Ask anything..."
-            className="pr-12 resize-none min-h-[48px] max-h-[120px]"
+            className="resize-none min-h-[48px] max-h-[120px]"
             rows={1}
             value={inputValue}
             onChange={e => setInputValue(e.target.value)}
           />
-
-          {/* Send Button */}
-          <div className="absolute right-2 bottom-2">
-            {isLoading ? (
-              <Button type="button" onClick={onStop} size="sm" variant="destructive" className="h-8 w-8 p-0 rounded-lg">
-                <Square className="h-4 w-4" />
-              </Button>
-            ) : (
-              <Button
-                type="submit"
-                size="sm"
-                className="h-8 w-8 p-0 rounded-lg bg-blue-600 hover:bg-blue-700"
-                disabled={!inputValue.trim()}>
-                <Send className="h-4 w-4" />
-              </Button>
-            )}
-          </div>
         </div>
 
         {/* Bottom Controls */}
@@ -155,6 +138,12 @@ export default function UserPrompt({ onSubmit, isLoading, onStop, context = [] }
                 <SelectItem value="gemini-2.5-pro">Gemini 2.5 Pro</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+
+          {/* Right Controls */}
+          <div className="flex items-center gap-2">
+            {/* Status Info */}
+            {isLoading && <div className="text-xs text-gray-400 font-medium mr-2">Generating...</div>}
 
             {/* Image Upload */}
             <input
@@ -170,13 +159,25 @@ export default function UserPrompt({ onSubmit, isLoading, onStop, context = [] }
               size="sm"
               onClick={() => fileInputRef.current?.click()}
               className="h-8 w-8 p-0 text-gray-500 hover:text-gray-700 hover:bg-gray-100 border border-gray-200 rounded-lg"
-              title="Upload image">
+              title="Upload screenshot or image">
               <Image className="h-4 w-4" />
             </Button>
-          </div>
 
-          {/* Right Info */}
-          <div className="text-xs text-gray-400 font-medium">{isLoading ? 'Generating...' : ''}</div>
+            {/* Send/Stop Button */}
+            {isLoading ? (
+              <Button type="button" onClick={onStop} size="sm" variant="destructive" className="h-8 w-8 p-0 rounded-lg">
+                <Square className="h-4 w-4" />
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                size="sm"
+                className="h-8 w-8 p-0 rounded-lg bg-blue-600 hover:bg-blue-700"
+                disabled={!inputValue.trim()}>
+                <Send className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
         </div>
       </form>
     </div>
