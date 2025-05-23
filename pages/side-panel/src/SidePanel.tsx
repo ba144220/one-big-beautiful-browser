@@ -1,14 +1,22 @@
 import '@src/SidePanel.css';
 import { withErrorBoundary, withSuspense } from '@extension/shared';
-import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/chrome-extension';
+import { SignedIn, SignedOut, UserButton } from '@clerk/chrome-extension';
 import { Button } from '@src/components/ui/button';
 
 const SidePanel = () => {
+  const handleSignIn = async () => {
+    // Create a new tab
+    chrome.tabs.create({ url: process.env.CEB_WEB_URL as string });
+    // Close the side panel
+    window.close();
+  };
   return (
     <div className="p-12">
       <nav className="">
         <SignedOut>
-          <SignInButton mode="modal" />
+          <Button size="sm" onClick={handleSignIn}>
+            Sign in
+          </Button>
         </SignedOut>
         <SignedIn>
           <UserButton />
