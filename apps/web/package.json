@@ -1,0 +1,39 @@
+{
+  "name": "@extension/web-app",
+  "version": "0.1.0",
+  "description": "Web application for the extension",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "clean:node_modules": "pnpx rimraf node_modules",
+    "clean:turbo": "rimraf .turbo",
+    "clean": "pnpm clean:turbo && pnpm clean:node_modules",
+    "build": "vite build",
+    "dev": "vite dev",
+    "lint": "eslint .",
+    "lint:fix": "pnpm lint --fix",
+    "prettier": "prettier . --write --ignore-path ../../.prettierignore",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@extension/i18n": "workspace:*",
+    "@extension/shared": "workspace:*",
+    "@extension/storage": "workspace:*",
+    "@extension/ui": "workspace:*",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@extension/tailwindcss-config": "workspace:*",
+    "@extension/tsconfig": "workspace:*",
+    "@extension/vite-config": "workspace:*",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0"
+  },
+  "postcss": {
+    "plugins": {
+      "tailwindcss": {},
+      "autoprefixer": {}
+    }
+  }
+}

@@ -136,6 +136,43 @@ importers:
         specifier: 6.1.0
         version: 6.1.0(@types/node@22.7.4)(jiti@1.21.6)(sass@1.79.4)(terser@5.34.1)(tsx@4.19.2)(yaml@2.5.1)
 
+  apps/web-app:
+    dependencies:
+      '@extension/i18n':
+        specifier: workspace:*
+        version: link:../../packages/i18n
+      '@extension/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+      '@extension/storage':
+        specifier: workspace:*
+        version: link:../../packages/storage
+      '@extension/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      react:
+        specifier: ^19.0.0
+        version: 19.0.0
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.0.0(react@19.0.0)
+    devDependencies:
+      '@extension/tailwindcss-config':
+        specifier: workspace:*
+        version: link:../../packages/tailwind-config
+      '@extension/tsconfig':
+        specifier: workspace:*
+        version: link:../../packages/tsconfig
+      '@extension/vite-config':
+        specifier: workspace:*
+        version: link:../../packages/vite-config
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.0.8
+      '@types/react-dom':
+        specifier: ^19.0.0
+        version: 19.0.3(@types/react@19.0.8)
+
   chrome-extension:
     dependencies:
       '@extension/env':
