@@ -24,5 +24,8 @@
   "devDependencies": {
     "@extension/storage": "workspace:*",
     "@extension/tsconfig": "workspace:*"
+  },
+  "dependencies": {
+    "zod": "^3.25.9"
   }
 }
