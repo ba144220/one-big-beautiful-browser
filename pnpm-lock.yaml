@@ -150,6 +150,9 @@ importers:
       '@langchain/langgraph-cli':
         specifier: ^0.0.37
         version: 0.0.37(@langchain/core@0.3.56)(@langchain/langgraph-checkpoint@0.0.17(@langchain/core@0.3.56))(@langchain/langgraph-sdk@0.0.78(@langchain/core@0.3.56)(react@19.0.0))(@langchain/langgraph@0.2.72(@langchain/core@0.3.56)(react@19.0.0)(zod-to-json-schema@3.24.5(zod@3.25.9)))(babel-plugin-macros@3.1.0)(typescript@5.8.1-rc)
+      '@langchain/langgraph-sdk':
+        specifier: ^0.0.78
+        version: 0.0.78(@langchain/core@0.3.56)(react@19.0.0)
       zod:
         specifier: ^3.25.9
         version: 3.25.9
@@ -1460,17 +1463,6 @@ packages:
     resolution: {integrity: sha512-+MTbXllNZ02xo/u+EXlKneyVRvlswCe2jEoHX7fD6MKMBSy4r6rcOJQoLozvgTuHGUm70Xx6a4YBmlNi/5oVLw==}
     engines: {node: ^18.19.0 || >=20.16.0}
     hasBin: true
-
-  '@langchain/langgraph-sdk@0.0.77':
-    resolution: {integrity: sha512-DMCONENhhaMS+Buw8s2UkKjAa9I6cT1aVJEDOmTO2lpon4Dqz/jiYUVJK7pTlNVSNvSx0E8aOmtT7NgGBcWflg==}
-    peerDependencies:
-      '@langchain/core': '>=0.2.31 <0.4.0'
-      react: ^18 || ^19
-    peerDependenciesMeta:
-      '@langchain/core':
-        optional: true
-      react:
-        optional: true
 
   '@langchain/langgraph-sdk@0.0.78':
     resolution: {integrity: sha512-skkUDmEhClWzlsr8jRaS1VpXVBISm5OFd0MUtS1jKRL5pn08K+IJRvHnlzgum9x7Dste9KXGcIGVoR7cNKJQrw==}
@@ -7081,16 +7073,6 @@ snapshots:
       - supports-color
       - typescript
 
-  '@langchain/langgraph-sdk@0.0.77(@langchain/core@0.3.56)(react@19.0.0)':
-    dependencies:
-      '@types/json-schema': 7.0.15
-      p-queue: 6.6.2
-      p-retry: 4.6.2
-      uuid: 9.0.1
-    optionalDependencies:
-      '@langchain/core': 0.3.56
-      react: 19.0.0
-
   '@langchain/langgraph-sdk@0.0.78(@langchain/core@0.3.56)(react@19.0.0)':
     dependencies:
       '@types/json-schema': 7.0.15
@@ -7113,7 +7095,7 @@ snapshots:
     dependencies:
       '@langchain/core': 0.3.56
       '@langchain/langgraph-checkpoint': 0.0.17(@langchain/core@0.3.56)
-      '@langchain/langgraph-sdk': 0.0.77(@langchain/core@0.3.56)(react@19.0.0)
+      '@langchain/langgraph-sdk': 0.0.78(@langchain/core@0.3.56)(react@19.0.0)
       uuid: 10.0.0
       zod: 3.25.9
     optionalDependencies:
