@@ -1,5 +1,5 @@
 {
-  "name": "@extension/web-app",
+  "name": "@extension/web",
   "version": "0.1.0",
   "description": "Web application for the extension",
   "type": "module",
@@ -20,6 +20,7 @@
     "@extension/shared": "workspace:*",
     "@extension/storage": "workspace:*",
     "@extension/ui": "workspace:*",
+    "@tailwindcss/postcss": "^4.1.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
@@ -32,8 +33,7 @@
   },
   "postcss": {
     "plugins": {
-      "tailwindcss": {},
-      "autoprefixer": {}
+      "@tailwindcss/postcss": {}
     }
   }
 }

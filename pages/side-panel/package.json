@@ -24,7 +24,8 @@
     "@extension/i18n": "workspace:*",
     "@extension/shared": "workspace:*",
     "@extension/storage": "workspace:*",
-    "@extension/ui": "workspace:*"
+    "@extension/ui": "workspace:*",
+    "@tailwindcss/postcss": "^4.1.7"
   },
   "devDependencies": {
     "@extension/tailwindcss-config": "workspace:*",
@@ -33,8 +34,7 @@
   },
   "postcss": {
     "plugins": {
-      "tailwindcss": {},
-      "autoprefixer": {}
+      "@tailwindcss/postcss": {}
     }
   }
 }
