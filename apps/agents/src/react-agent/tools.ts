@@ -5,43 +5,62 @@ import {
   type GetAllTabsInfo,
   type GetTabViewById,
   GetTabViewByIdSchema,
+  type MessageContent,
 } from '@extension/shared';
-import { z } from 'zod';
+import TurndownService from 'turndown';
 
-export const search = tool(
-  async ({ query }) => {
-    if (query.toLowerCase().includes('sf') || query.toLowerCase().includes('san francisco')) {
-      return "It's 60 degrees and foggy.";
+// Initialize turndown service for HTML to Markdown conversion
+const turndownService = new TurndownService({
+  headingStyle: 'atx',
+  codeBlockStyle: 'fenced',
+  emDelimiter: '*',
+});
+
+// Helper function to convert HTML to Markdown
+const htmlToMarkdown = (html: string): string => {
+  return turndownService.turndown(html);
+};
+
+// Helper function to process HTML content from interrupt calls
+const processHtmlContent = (content: MessageContent): MessageContent => {
+  if (typeof content === 'string') {
+    return content;
+  }
+
+  return content.map(item => {
+    if (item.type === 'text' && item.text) {
+      // Check if the text appears to be HTML (contains tags)
+      if (/<[a-z][\s\S]*>/i.test(item.text)) {
+        return {
+          type: 'text',
+          text: htmlToMarkdown(item.text),
+        };
+      }
     }
-    return "It's 90 degrees and sunny.";
-  },
-  {
-    name: 'search',
-    description: 'Call to surf the web.',
-    schema: z.object({
-      query: z.string().describe('The query to use in your search.'),
-    }),
-  },
-);
+    return item;
+  });
+};
 
-export const getActiveTabView = tool(
+const getActiveTabView = tool(
   async () => {
-    const response = interrupt<GetActiveTabView['Input'], GetActiveTabView['Return']>({
+    const response = await interrupt<GetActiveTabView, MessageContent>({
       name: 'getActiveTabView',
     });
-    return response;
+
+    return processHtmlContent(response);
   },
   {
     name: 'getActiveTabView',
-    description: 'Get the view of the active tab in the browser',
+    description: 'Get the view of the active tab in the browser converted to markdown format',
   },
 );
 
-export const getAllTabsInfo = tool(
+const getAllTabsInfo = tool(
   async () => {
-    const response = interrupt<GetAllTabsInfo['Input'], GetAllTabsInfo['Return']>({
+    const response = await interrupt<GetAllTabsInfo, MessageContent>({
       name: 'getAllTabsInfo',
     });
+
     return response;
   },
   {
@@ -50,17 +69,20 @@ export const getAllTabsInfo = tool(
   },
 );
 
-export const getTabViewById = tool(
+const getTabViewById = tool(
   async ({ id }) => {
-    const response = interrupt<GetTabViewById['Input'], GetTabViewById['Return']>({
+    const response = await interrupt<GetTabViewById, MessageContent>({
       name: 'getTabViewById',
       input: { id },
     });
-    return response;
+
+    return processHtmlContent(response);
   },
   {
     name: 'getTabViewById',
-    description: 'Get a view of a tab by ID (from getAllTabs).',
+    description: 'Get a view of a tab by ID (from getAllTabs) converted to markdown format.',
     schema: GetTabViewByIdSchema,
   },
 );
+
+export const tools = [getActiveTabView, getAllTabsInfo, getTabViewById];
