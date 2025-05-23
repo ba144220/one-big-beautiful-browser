@@ -5,28 +5,12 @@ import {
   type GetAllTabsInfo,
   type GetTabViewById,
   GetTabViewByIdSchema,
+  type MessageContent,
 } from '@extension/shared';
-import { z } from 'zod';
 
-export const search = tool(
-  async ({ query }) => {
-    if (query.toLowerCase().includes('sf') || query.toLowerCase().includes('san francisco')) {
-      return "It's 60 degrees and foggy.";
-    }
-    return "It's 90 degrees and sunny.";
-  },
-  {
-    name: 'search',
-    description: 'Call to surf the web.',
-    schema: z.object({
-      query: z.string().describe('The query to use in your search.'),
-    }),
-  },
-);
-
-export const getActiveTabView = tool(
+const getActiveTabView = tool(
   async () => {
-    const response = interrupt<GetActiveTabView['Input'], GetActiveTabView['Return']>({
+    const response = interrupt<GetActiveTabView, MessageContent>({
       name: 'getActiveTabView',
     });
     return response;
@@ -37,9 +21,9 @@ export const getActiveTabView = tool(
   },
 );
 
-export const getAllTabsInfo = tool(
+const getAllTabsInfo = tool(
   async () => {
-    const response = interrupt<GetAllTabsInfo['Input'], GetAllTabsInfo['Return']>({
+    const response = interrupt<GetAllTabsInfo, MessageContent>({
       name: 'getAllTabsInfo',
     });
     return response;
@@ -50,9 +34,9 @@ export const getAllTabsInfo = tool(
   },
 );
 
-export const getTabViewById = tool(
+const getTabViewById = tool(
   async ({ id }) => {
-    const response = interrupt<GetTabViewById['Input'], GetTabViewById['Return']>({
+    const response = interrupt<GetTabViewById, MessageContent>({
       name: 'getTabViewById',
       input: { id },
     });
@@ -64,3 +48,5 @@ export const getTabViewById = tool(
     schema: GetTabViewByIdSchema,
   },
 );
+
+export const tools = [getActiveTabView, getAllTabsInfo, getTabViewById];
