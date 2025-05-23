@@ -266,3 +266,32 @@ This Boilerplate is made possible thanks to all of its contributors.
 ---
 
 Made by [Jonghakseo](https://jonghakseo.github.io/)
+
+
+# GitHub Rules
+## Branch Name
+
+- `main` - Production branch
+- `dev` - Development branch
+- `feat/` - Feature branch
+- `fix/` - Fix branch
+- `hotfix/` - Hotfix branch
+- `test/` - Test branch
+
+* Use `-` for space
+
+Example:
+```
+feat/chatroom-ui
+```
+
+## Commit Message
+- `feat:` - Feature commit
+- `fix:` - Fix commit
+- `hotfix:` - Hotfix commit
+- `test:` - Test commit
+
+Example:
+```
+feat: add chatroom ui
+```
