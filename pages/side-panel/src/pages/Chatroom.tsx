@@ -1,7 +1,7 @@
 import { useStream } from '@langchain/langgraph-sdk/react';
 import type { Message } from '@langchain/langgraph-sdk';
 import { MessageContainer } from '../components/chat/messageContainer';
-import UserPrompt from '../components/userPrompt';
+import UserPrompt from '../components/chat/userPrompt';
 export default function Chatroom() {
   const thread = useStream<{ messages: Message[] }>({
     apiUrl: 'http://localhost:2024',
@@ -11,8 +11,6 @@ export default function Chatroom() {
 
   return (
     <div className="h-full flex flex-col">
-      <nav className="p-4">Chatroom</nav>
-
       <div className="pb-40 px-4 flex flex-col gap-2">
         {thread.messages.map(message => (
           <MessageContainer key={message.id} message={message} />
