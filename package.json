@@ -1,13 +1,13 @@
 {
-  "name": "chrome-extension-boilerplate-react-vite",
-  "version": "0.4.3",
-  "description": "chrome extension boilerplate",
+  "name": "yuchi-crappy-ai-extension",
+  "version": "0.0.1",
+  "description": "Yuchi's Crappy AI Extension",
   "license": "MIT",
   "private": true,
   "sideEffects": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/Jonghakseo/chrome-extension-boilerplate-react-vite.git"
+    "url": "https://github.com/ba144220/crappy-ai-browser-extension.git"
   },
   "type": "module",
   "scripts": {
