@@ -35,7 +35,21 @@ export default function Chatroom() {
           const message = new FormData(form).get('message') as string;
 
           form.reset();
-          thread.submit({ messages: [{ type: 'human', content: message }] });
+          thread.submit({
+            messages: [
+              {
+                type: 'human',
+                content: [
+                  {
+                    type: 'text',
+                    text: message,
+                    hidden: true,
+                    tabId: '123',
+                  },
+                ],
+              },
+            ],
+          });
         }}>
         <input type="text" name="message" className="flex-1 bg-muted" />
 
@@ -48,13 +62,13 @@ export default function Chatroom() {
             Send
           </button>
         )}
-        <button
-          onClick={() => {
-            console.log(thread.messages);
-          }}>
-          See Messages
-        </button>
       </form>
+      <button
+        onClick={() => {
+          console.log(thread.messages);
+        }}>
+        See Messages
+      </button>
     </div>
   );
 }

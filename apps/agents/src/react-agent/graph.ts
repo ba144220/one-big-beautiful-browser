@@ -1,7 +1,7 @@
 // npm install @langchain-anthropic
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { ChatAnthropic } from '@langchain/anthropic';
-import { getActiveTabView, getAllTabsInfo, getTabViewById, search } from './tools';
+import { tools } from './tools';
 import { MemorySaver } from '@langchain/langgraph';
 
 const checkpointer = new MemorySaver();
@@ -13,7 +13,7 @@ const model = new ChatAnthropic({
 
 const agent = createReactAgent({
   llm: model,
-  tools: [search, getActiveTabView, getAllTabsInfo, getTabViewById],
+  tools: tools,
   checkpointer,
 });
 
