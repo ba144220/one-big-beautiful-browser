@@ -6,6 +6,7 @@ import type { InterruptType } from '@extension/shared';
 import UserInput from '@src/components/chat/user-input';
 import { handleSubmit } from '@src/utils/handle-submit';
 import { useSelectedTabs } from '@src/hooks/use-selected-tabs';
+import { useState } from 'react';
 
 export default function Chatroom() {
   const thread = useStream<
@@ -27,6 +28,11 @@ export default function Chatroom() {
 
   const { selectedTabs, removeSelectedTabById } = useSelectedTabs();
 
+  const [model, setModel] = useState<
+    'claude-3-5-haiku-latest' | 'claude-3-5-sonnet-latest' | 'claude-3-7-sonnet-latest'
+  >('claude-3-5-haiku-latest');
+  const [mode, setMode] = useState<'agent' | 'ask'>('ask');
+
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-muted">
       <div className="overflow-y-auto py-4 px-4 flex flex-col gap-2 flex-1">
@@ -42,10 +48,7 @@ export default function Chatroom() {
             const message = new FormData(form).get('message') as string;
             form.reset();
             const messages = await handleSubmit(message, thread.messages, selectedTabs);
-            thread.submit(
-              { messages },
-              { config: { configurable: { mode: 'ask', model: 'claude-3-5-haiku-latest' } } },
-            );
+            thread.submit({ messages }, { config: { configurable: { mode, model } } });
           }}
           isLoading={thread.isLoading}
           onStop={() => thread.stop()}
@@ -58,6 +61,10 @@ export default function Chatroom() {
           onBadgeRemove={tabId => {
             removeSelectedTabById(tabId);
           }}
+          model={model}
+          setModel={setModel}
+          mode={mode}
+          setMode={setMode}
         />
       </div>
     </div>
