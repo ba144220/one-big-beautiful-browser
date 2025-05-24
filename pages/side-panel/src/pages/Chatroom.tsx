@@ -21,7 +21,7 @@ export default function Chatroom() {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="pb-40 px-4 flex flex-col gap-2">
+      <div className="pb-50 px-4 flex flex-col gap-2">
         {thread.messages.map(message => (
           <MessageContainer key={message.id} message={message} />
         ))}
