@@ -26,6 +26,7 @@
     "@extension/storage": "workspace:*",
     "@extension/ui": "workspace:*",
     "@langchain/langgraph-sdk": "^0.0.78",
+    "@radix-ui/react-select": "^2.2.5",
     "@radix-ui/react-slot": "^1.2.2",
     "@tailwindcss/postcss": "^4.1.7",
     "class-variance-authority": "^0.7.1",
