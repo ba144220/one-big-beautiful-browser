@@ -12,6 +12,10 @@ export default function Chatroom() {
     { messages: Message[] },
     {
       InterruptType: InterruptType;
+      ConfigurableType: {
+        model: 'claude-3-5-sonnet-latest' | 'claude-3-7-sonnet-latest' | 'claude-3-5-haiku-latest';
+        mode: 'agent' | 'ask';
+      };
     }
   >({
     apiUrl: 'http://localhost:2024',
@@ -38,7 +42,10 @@ export default function Chatroom() {
             const message = new FormData(form).get('message') as string;
             form.reset();
             const messages = await handleSubmit(message, thread.messages, selectedTabs);
-            thread.submit({ messages });
+            thread.submit(
+              { messages },
+              { config: { configurable: { mode: 'ask', model: 'claude-3-5-haiku-latest' } } },
+            );
           }}
           isLoading={thread.isLoading}
           onStop={() => thread.stop()}
@@ -46,6 +53,7 @@ export default function Chatroom() {
             tabId: tab.id!,
             tabTitle: tab.title!,
             tabFaviconUrl: tab.favIconUrl!,
+            tabUrl: tab.url!,
           }))}
           onBadgeRemove={tabId => {
             removeSelectedTabById(tabId);

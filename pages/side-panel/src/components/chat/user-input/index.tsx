@@ -39,8 +39,13 @@ export default function UserInput({
   const hasText = inputValue.trim().length > 0;
 
   return (
-    <div className={cn('bg-background rounded-md pt-2 pb-1', !isActive && 'pb-2')}>
+    <div
+      className={cn(
+        'bg-background rounded-md pt-2 pb-1 flex flex-row items-center justify-center',
+        !isActive && 'pb-2',
+      )}>
       <form
+        className="flex flex-col items-start justify-center w-full"
         onSubmit={
           isActive
             ? e => {
@@ -50,22 +55,24 @@ export default function UserInput({
               }
             : undefined
         }>
-        <div className="px-2 flex flex-wrap gap-1">
-          {isActive && <TabSelection />}
-          {tabMetadata.map(tab => {
-            return (
-              <TabBadge
-                key={tab.tabId}
-                tabTitle={tab.tabTitle ?? ''}
-                tabFaviconUrl={tab.tabFaviconUrl ?? ''}
-                tabId={tab.tabId ?? 0}
-                onRemove={onBadgeRemove}
-                isActive={isActive}
-              />
-            );
-          })}
-        </div>
-        <div className="w-full flex flex-row pt-1">
+        {(isActive || tabMetadata.length > 0) && (
+          <div className="px-2 flex flex-wrap gap-1 pb-1">
+            {isActive && <TabSelection />}
+            {tabMetadata.map(tab => {
+              return (
+                <TabBadge
+                  key={tab.tabId}
+                  tabTitle={tab.tabTitle ?? ''}
+                  tabFaviconUrl={tab.tabFaviconUrl ?? ''}
+                  tabId={tab.tabId ?? 0}
+                  onRemove={onBadgeRemove}
+                  isActive={isActive}
+                />
+              );
+            })}
+          </div>
+        )}
+        <div className="w-full flex flex-row">
           <textarea
             name="message"
             className="placeholder:text-muted-foreground px-2 outline-none field-sizing-content grow resize-none"
@@ -79,7 +86,7 @@ export default function UserInput({
           />
         </div>
         {isActive && (
-          <div className="flex gap-2 px-2 justify-end pt-1 w-full">
+          <div className="flex gap-2 px-2 justify-end w-full pt-1">
             <button
               type="button"
               className="w-5 h-5 p-0 cursor-pointer flex items-center justify-center text-muted-foreground hover:text-foreground transition-all duration-200">
