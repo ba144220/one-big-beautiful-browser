@@ -309,7 +309,7 @@ const takeScreenshot = tool(
   },
 );
 
-export const tools = [
+export const askTools = [
   getActiveTabMarkdownContent,
   getAllTabsInfo,
   getTabMarkdownContentById,
@@ -317,15 +317,18 @@ export const tools = [
   getActiveTabSnapshot,
   getTabSnapshotById,
   getTabSnapshotsByIds,
-  // Browser Control Tools
+  waitForElement,
+  getElementInfo,
+  takeScreenshot,
+];
+
+export const agentTools = [
+  ...askTools,
   clickElement,
   typeText,
   scrollPage,
   scrollToElement,
   hoverElement,
   pressKey,
-  waitForElement,
-  getElementInfo,
   navigateToUrl,
-  takeScreenshot,
 ];

@@ -1,7 +1,7 @@
 // npm install @langchain-anthropic
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { ChatAnthropic } from '@langchain/anthropic';
-import { tools } from './tools';
+import { agentTools, askTools } from './tools';
 import { MemorySaver } from '@langchain/langgraph';
 
 const checkpointer = new MemorySaver();
@@ -13,8 +13,15 @@ const model = new ChatAnthropic({
 
 const agent = createReactAgent({
   llm: model,
-  tools: tools,
+  tools: agentTools,
   checkpointer,
 });
 
-export const graph = agent;
+const ask = createReactAgent({
+  llm: model,
+  tools: askTools,
+  checkpointer,
+});
+
+export const agentGraph = agent;
+export const askGraph = ask;
