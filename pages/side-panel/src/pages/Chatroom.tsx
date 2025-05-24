@@ -1,8 +1,10 @@
 import { useStream } from '@langchain/langgraph-sdk/react';
 import type { Message } from '@langchain/langgraph-sdk';
 import { MessageContainer } from '../components/chat/message-container';
+import UserPrompt from '../components/chat/user-prompt';
 import useInterrupt from '../hooks/useInterrupt';
 import type { InterruptType } from '@extension/shared';
+
 export default function Chatroom() {
   const thread = useStream<
     { messages: Message[] },
@@ -19,56 +21,18 @@ export default function Chatroom() {
 
   return (
     <div className="h-full flex flex-col">
-      <nav className="p-4">Chatroom</nav>
-
       <div className="pb-40 px-4 flex flex-col gap-2">
         {thread.messages.map(message => (
           <MessageContainer key={message.id} message={message} />
         ))}
       </div>
-      <form
-        className="fixed bottom-0 left-0 right-0 p-4 flex flex-row gap-2"
-        onSubmit={e => {
-          e.preventDefault();
 
-          const form = e.target as HTMLFormElement;
-          const message = new FormData(form).get('message') as string;
-
-          form.reset();
-          thread.submit({
-            messages: [
-              {
-                type: 'human',
-                content: [
-                  {
-                    type: 'text',
-                    text: message,
-                    hidden: true,
-                    tabId: '123',
-                  },
-                ],
-              },
-            ],
-          });
-        }}>
-        <input type="text" name="message" className="flex-1 bg-muted" />
-
-        {thread.isLoading ? (
-          <button key="stop" type="button" onClick={() => thread.stop()}>
-            Stop
-          </button>
-        ) : (
-          <button key="submit" type="submit">
-            Send
-          </button>
-        )}
-      </form>
-      <button
-        onClick={() => {
-          console.log(thread.messages);
-        }}>
-        See Messages
-      </button>
+      <UserPrompt
+        onSubmit={message => thread.submit({ messages: [{ type: 'human', content: message }] })}
+        isLoading={thread.isLoading}
+        onStop={() => thread.stop()}
+        context={['Current file', 'Project context']}
+      />
     </div>
   );
 }
