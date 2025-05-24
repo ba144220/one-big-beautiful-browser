@@ -49,6 +49,60 @@ export async function getTabView(id?: string): Promise<MessageContent> {
 }
 
 /**
+ * Gets the content of multiple tabs and returns it as a MessageContent array
+ * If ids are not provided, gets the active tab
+ * If ids are provided, gets the content of all specified tabs
+ */
+export async function getTabViews(ids?: string[]): Promise<MessageContent> {
+  try {
+    // If no ids provided, default to active tab
+    if (!ids || ids.length === 0) {
+      return getTabView(); // Reuse existing function for active tab
+    }
+
+    // Process each tab ID
+    const tabPromises = ids.map(async id => {
+      try {
+        const tabId = parseInt(id, 10);
+        if (isNaN(tabId)) {
+          return `Tab ID ${id}: Error - Invalid tab ID format`;
+        }
+
+        // Get tab info
+        const tab = await chrome.tabs.get(tabId);
+
+        // Get tab content
+        const content = await getTabContent(tabId);
+
+        return `Tab ID ${id}: ${tab.title || 'Untitled'} (${tab.url || 'No URL'})\n\n${content}`;
+      } catch (error) {
+        console.error(`Error processing tab ID ${id}:`, error);
+        return `Tab ID ${id}: Error - ${error instanceof Error ? error.message : String(error)}`;
+      }
+    });
+
+    // Wait for all tab content to be fetched
+    const tabContents = await Promise.all(tabPromises);
+
+    // Format the response with clear tab ID associations
+    return [
+      {
+        type: 'text',
+        text: `Content from ${tabContents.length} tabs:\n\n${tabContents.join('\n\n---\n\n')}`,
+      },
+    ];
+  } catch (error) {
+    console.error('Error getting multiple tab views:', error);
+    return [
+      {
+        type: 'text',
+        text: `Error retrieving content from multiple tabs: ${error instanceof Error ? error.message : String(error)}`,
+      },
+    ];
+  }
+}
+
+/**
  * Gets information about all open tabs and returns it as a MessageContent array
  */
 export async function getAllTabsInfo(): Promise<MessageContent> {
