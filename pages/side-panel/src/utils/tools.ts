@@ -1,6 +1,8 @@
-import { type MessageContent } from '@extension/shared';
-import { createHtmlSnapshot } from './snapshot';
+import type { BrowserControlType, type MessageContent } from '@extension/shared';
+
+import { createEnhancedHtmlSnapshot } from './enhanced-snapshot';
 import { htmlToMarkdown } from './markdown';
+import * as browserControl from './browser-control';
 
 export {
   getTabMarkdownContentExt as getTabMarkdownContent,
@@ -176,12 +178,13 @@ async function getTabHtmlContent(tabId: number): Promise<string> {
 
 /**
  * Helper function to get the snapshot of a tab using executeScript
+ * Uses enhanced snapshot that adds unique identifiers to interactive elements
  */
 async function getTabSnapshot(tabId: number): Promise<string> {
   try {
     const results = await chrome.scripting.executeScript({
       target: { tabId },
-      func: createHtmlSnapshot(),
+      func: createEnhancedHtmlSnapshot(),
     });
 
     return (results[0]?.result as string) || 'No snapshot created';
@@ -286,6 +289,71 @@ export async function getTabSnapshotsExt(ids?: string[]): Promise<MessageContent
       {
         type: 'text',
         text: `Error retrieving snapshots from multiple tabs: ${error instanceof Error ? error.message : String(error)}`,
+      },
+    ];
+  }
+}
+
+/**
+ * Handles browser control actions using CDP
+ */
+export async function handleBrowserControl(action: BrowserControlType): Promise<MessageContent> {
+  try {
+    // Get the target tab ID
+    let tabId: number;
+
+    if ('tabId' in action.input && action.input.tabId !== undefined) {
+      tabId = action.input.tabId;
+    } else {
+      // Use active tab if no tabId specified
+      const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (!activeTab || !activeTab.id) {
+        return [{ type: 'text', text: 'Error: No active tab found' }];
+      }
+      tabId = activeTab.id;
+    }
+
+    // Execute the appropriate browser control action
+    switch (action.name) {
+      case 'clickElement':
+        return await browserControl.clickElement(tabId, action.input.selector);
+
+      case 'typeText':
+        return await browserControl.typeText(tabId, action.input.selector, action.input.text, action.input.clear);
+
+      case 'scrollPage':
+        return await browserControl.scrollPage(tabId, action.input.direction, action.input.amount);
+
+      case 'scrollToElement':
+        return await browserControl.scrollToElement(tabId, action.input.selector);
+
+      case 'hoverElement':
+        return await browserControl.hoverElement(tabId, action.input.selector);
+
+      case 'pressKey':
+        return await browserControl.pressKey(tabId, action.input.key, action.input.modifiers);
+
+      case 'waitForElement':
+        return await browserControl.waitForElement(tabId, action.input.selector, action.input.timeout);
+
+      case 'getElementInfo':
+        return await browserControl.getElementInfo(tabId, action.input.selector);
+
+      case 'navigateToUrl':
+        return await browserControl.navigateToUrl(tabId, action.input.url);
+
+      case 'takeScreenshot':
+        return await browserControl.takeScreenshot(tabId, action.input.fullPage);
+
+      default:
+        return [{ type: 'text', text: `Unknown browser control action: ${(action as { name: string }).name}` }];
+    }
+  } catch (error) {
+    console.error('Error handling browser control:', error);
+    return [
+      {
+        type: 'text',
+        text: `Error handling browser control: ${error instanceof Error ? error.message : String(error)}`,
       },
     ];
   }
