@@ -1,6 +1,7 @@
 import { type Message } from '@langchain/langgraph-sdk';
 import { cn } from '@src/lib/utils';
 import React from 'react';
+import { Img } from 'react-image';
 
 export const StringMessage = ({ content }: { content: string }) => {
   return (
@@ -13,7 +14,7 @@ export const StringMessage = ({ content }: { content: string }) => {
 };
 
 export const ImageMessage = ({ content }: { content: string }) => {
-  return <img src={content} alt="" />;
+  return <Img src={content} alt="" />;
 };
 
 export const MessageContainer = ({ message }: { message: Message }) => {
