@@ -1,5 +1,5 @@
 import { useSelectedTabs } from '@src/hooks/use-selected-tabs';
-
+import TabBadge from './tab-badge';
 export type UserInputProps = {
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   isLoading: boolean;
@@ -9,18 +9,11 @@ export type UserInputProps = {
 export default function UserInput({ onSubmit, isLoading, onStop }: UserInputProps) {
   const { selectedTabs } = useSelectedTabs();
   return (
-    <div className="bg-muted rounded-md py-2">
+    <div className="bg-background rounded-md py-2">
       <form onSubmit={onSubmit}>
         <div className="px-2 flex flex-wrap gap-1">
           {selectedTabs.map(tab => {
-            return (
-              <div
-                key={tab.id}
-                className="py-[1px] px-[4px] text-[10px] border rounded-sm flex flex-row justify-center items-center gap-1">
-                <img src={tab.favIconUrl} alt="" className="w-3 h-3" />
-                <span>{tab.title?.length && tab.title.length > 20 ? tab.title?.slice(0, 20) + '...' : tab.title}</span>
-              </div>
-            );
+            return <TabBadge key={tab.id} tab={tab} />;
           })}
         </div>
         <div className="w-full flex flex-row pt-1">

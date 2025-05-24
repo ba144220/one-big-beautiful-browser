@@ -1,7 +1,7 @@
 import { useStream } from '@langchain/langgraph-sdk/react';
 import type { Message } from '@langchain/langgraph-sdk';
 import { MessageContainer } from '../components/chat/message-container';
-import useInterrupt from '../hooks/useInterrupt';
+import useInterrupt from '../hooks/use-interrupt';
 import type { InterruptType } from '@extension/shared';
 import UserInput from '@src/components/chat/user-input';
 
@@ -20,7 +20,7 @@ export default function Chatroom() {
   useInterrupt(thread);
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden">
+    <div className="h-screen flex flex-col overflow-hidden bg-muted">
       <div className="overflow-y-auto pb-4 px-4 flex flex-col gap-2 flex-1">
         {thread.messages.map(message => (
           <MessageContainer key={message.id} message={message} />
