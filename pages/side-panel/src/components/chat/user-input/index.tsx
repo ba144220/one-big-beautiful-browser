@@ -12,6 +12,7 @@ export type UserInputProps = {
   onBadgeRemove?: (tabId: number) => void;
   isActive?: boolean;
   initialValue?: string;
+  scrollRef?: React.RefObject<HTMLDivElement | null>;
 };
 
 export default function UserInput({
