@@ -149,27 +149,35 @@ export async function clickElement(tabId: number, selector: string): Promise<Mes
   try {
     await attachDebugger(tabId);
 
-    await sendCDPCommand(tabId, 'Runtime.enable');
+    // Find the element first
+    const element = await findElement(tabId, selector);
+    if (!element || !element.boundingBox) {
+      return [{ type: 'text', text: `Error: Element not found or not visible: ${selector}` }];
+    }
 
-    const script = `
-      (function() {
-        const element = document.querySelector('${selector.replace(/'/g, "\\'")}')
-        if (element) {
-          element.click();
-          return 'success';
-        }
-        return 'element not found';
-      })()
-    `;
+    // Input domain is enabled by default in CDP
 
-    const result = await sendCDPCommand(tabId, 'Runtime.evaluate', {
-      expression: script,
-      returnByValue: true,
+    // Calculate click coordinates (center of element)
+    const x = element.boundingBox.x + element.boundingBox.width / 2;
+    const y = element.boundingBox.y + element.boundingBox.height / 2;
+
+    // Dispatch mouse pressed event
+    await sendCDPCommand(tabId, 'Input.dispatchMouseEvent', {
+      type: 'mousePressed',
+      x,
+      y,
+      button: 'left',
+      clickCount: 1,
     });
 
-    if (result.result.value !== 'success') {
-      throw new Error('JavaScript click failed: element not found');
-    }
+    // Dispatch mouse released event
+    await sendCDPCommand(tabId, 'Input.dispatchMouseEvent', {
+      type: 'mouseReleased',
+      x,
+      y,
+      button: 'left',
+      clickCount: 1,
+    });
 
     return [{ type: 'text', text: `Successfully clicked element: ${selector}` }];
   } catch (error) {
@@ -189,30 +197,62 @@ export async function typeText(tabId: number, selector: string, text: string, cl
   try {
     await attachDebugger(tabId);
 
-    await sendCDPCommand(tabId, 'Runtime.enable');
+    // Find and click the element first to focus it
+    const element = await findElement(tabId, selector);
+    if (!element || !element.boundingBox) {
+      return [{ type: 'text', text: `Error: Element not found or not visible: ${selector}` }];
+    }
 
-    const script = `
-      (function() {
-        const element = document.querySelector('${selector.replace(/'/g, "\\'")}')
-        if (element) {
-          element.focus();
-          ${clear ? 'element.value = "";' : ''}
-          element.value += '${text.replace(/'/g, "\\'")}'
-          element.dispatchEvent(new Event('input', { bubbles: true }));
-          element.dispatchEvent(new Event('change', { bubbles: true }));
-          return 'success';
-        }
-        return 'element not found';
-      })()
-    `;
+    // Input domain is enabled by default in CDP
 
-    const result = await sendCDPCommand(tabId, 'Runtime.evaluate', {
-      expression: script,
-      returnByValue: true,
+    // Click to focus the element
+    const x = element.boundingBox.x + element.boundingBox.width / 2;
+    const y = element.boundingBox.y + element.boundingBox.height / 2;
+
+    await sendCDPCommand(tabId, 'Input.dispatchMouseEvent', {
+      type: 'mousePressed',
+      x,
+      y,
+      button: 'left',
+      clickCount: 1,
     });
 
-    if (result.result.value !== 'success') {
-      throw new Error('JavaScript typing failed: element not found');
+    await sendCDPCommand(tabId, 'Input.dispatchMouseEvent', {
+      type: 'mouseReleased',
+      x,
+      y,
+      button: 'left',
+      clickCount: 1,
+    });
+
+    // Clear existing text if requested
+    if (clear) {
+      // Select all text (Ctrl+A or Cmd+A)
+      const selectAllModifier = process.platform === 'darwin' ? 4 : 2; // Meta on Mac, Ctrl on others
+
+      await sendCDPCommand(tabId, 'Input.dispatchKeyEvent', {
+        type: 'keyDown',
+        modifiers: selectAllModifier,
+        key: 'a',
+        code: 'KeyA',
+        windowsVirtualKeyCode: 65,
+      });
+
+      await sendCDPCommand(tabId, 'Input.dispatchKeyEvent', {
+        type: 'keyUp',
+        modifiers: selectAllModifier,
+        key: 'a',
+        code: 'KeyA',
+        windowsVirtualKeyCode: 65,
+      });
+    }
+
+    // Type each character
+    for (const char of text) {
+      await sendCDPCommand(tabId, 'Input.dispatchKeyEvent', {
+        type: 'char',
+        text: char,
+      });
     }
 
     return [{ type: 'text', text: `Successfully typed text into element: ${selector}` }];
@@ -235,36 +275,40 @@ export async function scrollPage(
   try {
     await attachDebugger(tabId);
 
-    await sendCDPCommand(tabId, 'Runtime.enable');
+    // Input domain is enabled by default in CDP
 
-    let scrollX = 0;
-    let scrollY = 0;
+    // Get viewport center for scroll position
+    await sendCDPCommand(tabId, 'Page.enable');
+    const { layoutViewport } = await sendCDPCommand(tabId, 'Page.getLayoutMetrics');
+    const x = layoutViewport.clientWidth / 2;
+    const y = layoutViewport.clientHeight / 2;
 
+    let deltaX = 0;
+    let deltaY = 0;
+
+    // Convert scroll direction to wheel delta (negative values scroll in positive direction)
     switch (direction) {
       case 'up':
-        scrollY = -amount;
+        deltaY = -amount;
         break;
       case 'down':
-        scrollY = amount;
+        deltaY = amount;
         break;
       case 'left':
-        scrollX = -amount;
+        deltaX = -amount;
         break;
       case 'right':
-        scrollX = amount;
+        deltaX = amount;
         break;
     }
 
-    const script = `
-      (function() {
-        window.scrollBy(${scrollX}, ${scrollY});
-        return 'success';
-      })()
-    `;
-
-    await sendCDPCommand(tabId, 'Runtime.evaluate', {
-      expression: script,
-      returnByValue: true,
+    // Dispatch mouse wheel event
+    await sendCDPCommand(tabId, 'Input.dispatchMouseEvent', {
+      type: 'mouseWheel',
+      x,
+      y,
+      deltaX,
+      deltaY,
     });
 
     return [{ type: 'text', text: `Successfully scrolled ${direction} by ${amount}px` }];
@@ -330,32 +374,24 @@ export async function hoverElement(tabId: number, selector: string): Promise<Mes
   try {
     await attachDebugger(tabId);
 
-    await sendCDPCommand(tabId, 'Runtime.enable');
-
-    const script = `
-      (function() {
-        const element = document.querySelector('${selector.replace(/'/g, "\\'")}')
-        if (element) {
-          const event = new MouseEvent('mouseover', {
-            bubbles: true,
-            cancelable: true,
-            view: window
-          });
-          element.dispatchEvent(event);
-          return 'success';
-        }
-        return 'element not found';
-      })()
-    `;
-
-    const result = await sendCDPCommand(tabId, 'Runtime.evaluate', {
-      expression: script,
-      returnByValue: true,
-    });
-
-    if (result.result.value !== 'success') {
-      throw new Error('JavaScript hover failed: element not found');
+    // Find the element first
+    const element = await findElement(tabId, selector);
+    if (!element || !element.boundingBox) {
+      return [{ type: 'text', text: `Error: Element not found or not visible: ${selector}` }];
     }
+
+    // Input domain is enabled by default in CDP
+
+    // Calculate hover coordinates (center of element)
+    const x = element.boundingBox.x + element.boundingBox.width / 2;
+    const y = element.boundingBox.y + element.boundingBox.height / 2;
+
+    // Dispatch mouse moved event to hover over the element
+    await sendCDPCommand(tabId, 'Input.dispatchMouseEvent', {
+      type: 'mouseMoved',
+      x,
+      y,
+    });
 
     return [{ type: 'text', text: `Successfully hovered over element: ${selector}` }];
   } catch (error) {
@@ -375,39 +411,62 @@ export async function pressKey(tabId: number, key: string, modifiers: string[] =
   try {
     await attachDebugger(tabId);
 
-    await sendCDPCommand(tabId, 'Runtime.enable');
+    // Input domain is enabled by default in CDP
 
-    const script = `
-      (function() {
-        const event = new KeyboardEvent('keydown', {
-          key: '${key.replace(/'/g, "\\'")}'',
-          altKey: ${modifiers.includes('Alt')},
-          ctrlKey: ${modifiers.includes('Control')},
-          metaKey: ${modifiers.includes('Meta')},
-          shiftKey: ${modifiers.includes('Shift')},
-          bubbles: true,
-          cancelable: true
-        });
-        document.dispatchEvent(event);
-        
-        const upEvent = new KeyboardEvent('keyup', {
-          key: '${key.replace(/'/g, "\\'")}'',
-          altKey: ${modifiers.includes('Alt')},
-          ctrlKey: ${modifiers.includes('Control')},
-          metaKey: ${modifiers.includes('Meta')},
-          shiftKey: ${modifiers.includes('Shift')},
-          bubbles: true,
-          cancelable: true
-        });
-        document.dispatchEvent(upEvent);
-        
-        return 'success';
-      })()
-    `;
+    // Calculate modifier flags
+    let modifierFlags = 0;
+    if (modifiers.includes('Alt')) modifierFlags |= 1;
+    if (modifiers.includes('Control')) modifierFlags |= 2;
+    if (modifiers.includes('Meta')) modifierFlags |= 4;
+    if (modifiers.includes('Shift')) modifierFlags |= 8;
 
-    await sendCDPCommand(tabId, 'Runtime.evaluate', {
-      expression: script,
-      returnByValue: true,
+    // Get key code for common keys
+    const getKeyCode = (key: string): number => {
+      const keyCodes: Record<string, number> = {
+        Enter: 13,
+        Escape: 27,
+        Space: 32,
+        ArrowLeft: 37,
+        ArrowUp: 38,
+        ArrowRight: 39,
+        ArrowDown: 40,
+        Tab: 9,
+        Backspace: 8,
+        Delete: 46,
+      };
+
+      if (keyCodes[key]) return keyCodes[key];
+      if (key.length === 1) return key.toUpperCase().charCodeAt(0);
+      return 0;
+    };
+
+    const keyCode = getKeyCode(key);
+    const code = key.length === 1 ? `Key${key.toUpperCase()}` : key;
+
+    // Dispatch key down event
+    await sendCDPCommand(tabId, 'Input.dispatchKeyEvent', {
+      type: 'keyDown',
+      modifiers: modifierFlags,
+      key,
+      code,
+      windowsVirtualKeyCode: keyCode,
+    });
+
+    // For printable characters, also send a char event
+    if (key.length === 1 && !modifiers.includes('Control') && !modifiers.includes('Meta')) {
+      await sendCDPCommand(tabId, 'Input.dispatchKeyEvent', {
+        type: 'char',
+        text: key,
+      });
+    }
+
+    // Dispatch key up event
+    await sendCDPCommand(tabId, 'Input.dispatchKeyEvent', {
+      type: 'keyUp',
+      modifiers: modifierFlags,
+      key,
+      code,
+      windowsVirtualKeyCode: keyCode,
     });
 
     const modifierText = modifiers.length > 0 ? ` with modifiers: ${modifiers.join(', ')}` : '';
