@@ -39,6 +39,7 @@ export const MessageContainer = ({ message }: { message: Message }) => {
 
     return <UserInput isActive={false} initialValue={text} tabMetadata={tabMetadata} />;
   }
+
   return (
     <div key={message.id} className={cn('flex flex-row gap-2 justify-start')}>
       <div className={cn('flex flex-col gap-2')}>
@@ -62,21 +63,15 @@ export const MessageContainer = ({ message }: { message: Message }) => {
           })
         )}
 
-        {message.type === 'ai' && (message as any).tool_call_chunks?.length > 0 && (
+        {message.type === 'ai' && message.tool_calls && message.tool_calls.length > 0 && (
           <div className="text-xs text-muted-foreground mt-2 border-l-2 border-gray-300 pl-2">
-            {(message as any).tool_call_chunks.map((tool: any, idx: number) => (
+            {message.tool_calls.map((tool, idx) => (
               <div key={idx}>
                 🔧 Called tool: <strong>{tool.name}</strong>
               </div>
             ))}
           </div>
         )}
-
-        {/* {(message.content as string).split('\n').map((line, index) => (
-                <React.Fragment key={index}>
-                  {line} {index < (message.content as string).split('\n').length - 1 && <br />}{' '}
-                </React.Fragment>
-              ))} */}
       </div>
     </div>
   );

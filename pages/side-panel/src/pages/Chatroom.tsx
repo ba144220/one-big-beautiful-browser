@@ -24,33 +24,6 @@ export default function Chatroom() {
 
   const { selectedTabs, removeSelectedTabById } = useSelectedTabs();
 
-  useEffect(() => {
-    const lastAiMessage = thread.messages.filter(m => m.type === 'ai').at(-1);
-
-    if (lastAiMessage) {
-      console.log('🧠 [AI 回覆 - 完整物件] =========');
-      console.log(JSON.stringify(lastAiMessage, null, 2));
-
-      console.log('💬 文字內容:', lastAiMessage.content);
-
-      if (lastAiMessage.tool_calls?.length) {
-        console.log('🛠️ 工具呼叫:', lastAiMessage.tool_calls);
-      }
-
-      if (lastAiMessage.invalid_tool_calls?.length) {
-        console.warn('⚠️ 無效工具呼叫:', lastAiMessage.invalid_tool_calls);
-      }
-
-      if (lastAiMessage.usage_metadata) {
-        console.log('📊 Token 使用資訊:', lastAiMessage.usage_metadata);
-      }
-
-      if (lastAiMessage.response_metadata) {
-        console.log('🧾 其他 Metadata:', lastAiMessage.response_metadata);
-      }
-    }
-  }, [thread.messages]);
-
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-muted">
       <div className="overflow-y-auto py-4 px-4 flex flex-col gap-2 flex-1">
