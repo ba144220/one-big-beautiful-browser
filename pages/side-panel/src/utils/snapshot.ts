@@ -3,7 +3,7 @@
  * and preserving only the essential content for LLM processing.
  * The output is minified by default to reduce size.
  */
-export function createHtmlSnapshot() {
+export function createHtmlSnapshot(characterLimit = 15000) {
   return function script() {
     // Helper functions to identify important elements
     function isTextNode(node: Node): boolean {
@@ -229,7 +229,7 @@ export function createHtmlSnapshot() {
         );
       }
 
-      return minifyHtml(processedBody.innerHTML);
+      return minifyHtml(processedBody.innerHTML).substring(0, characterLimit);
     }
 
     return processDocument();
