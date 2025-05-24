@@ -14,6 +14,12 @@
     "@langchain/core": "^0.3.56",
     "@langchain/langgraph": "^0.2.72",
     "@langchain/langgraph-cli": "^0.0.37",
+    "@langchain/langgraph-sdk": "^0.0.78",
+    "turndown": "^7.2.0",
     "zod": "^3.25.9"
+  },
+  "devDependencies": {
+    "@extension/shared": "workspace:*",
+    "@types/turndown": "^5.0.5"
   }
 }
