@@ -6,6 +6,7 @@ import type { InterruptType } from '@extension/shared';
 import UserInput from '@src/components/chat/user-input';
 import { handleSubmit } from '@src/utils/handle-submit';
 import { useSelectedTabs } from '@src/hooks/use-selected-tabs';
+import { useEffect } from 'react';
 
 export default function Chatroom() {
   const thread = useStream<
@@ -22,6 +23,33 @@ export default function Chatroom() {
   useInterrupt(thread);
 
   const { selectedTabs, removeSelectedTabById } = useSelectedTabs();
+
+  useEffect(() => {
+    const lastAiMessage = thread.messages.filter(m => m.type === 'ai').at(-1);
+
+    if (lastAiMessage) {
+      console.log('🧠 [AI 回覆 - 完整物件] =========');
+      console.log(JSON.stringify(lastAiMessage, null, 2));
+
+      console.log('💬 文字內容:', lastAiMessage.content);
+
+      if (lastAiMessage.tool_calls?.length) {
+        console.log('🛠️ 工具呼叫:', lastAiMessage.tool_calls);
+      }
+
+      if (lastAiMessage.invalid_tool_calls?.length) {
+        console.warn('⚠️ 無效工具呼叫:', lastAiMessage.invalid_tool_calls);
+      }
+
+      if (lastAiMessage.usage_metadata) {
+        console.log('📊 Token 使用資訊:', lastAiMessage.usage_metadata);
+      }
+
+      if (lastAiMessage.response_metadata) {
+        console.log('🧾 其他 Metadata:', lastAiMessage.response_metadata);
+      }
+    }
+  }, [thread.messages]);
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-muted">

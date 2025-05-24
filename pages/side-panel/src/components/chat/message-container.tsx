@@ -37,7 +37,11 @@ export const MessageContainer = ({ message }: { message: Message }) => {
   }
   return (
     <div key={message.id} className={cn('flex flex-row gap-2 justify-start')}>
-      <div className={cn('flex flex-col gap-2', message.type === 'tool' ? 'text-xs text-muted-foreground' : '')}>
+      <div
+        className={cn(
+          'flex flex-col gap-2',
+          message.type === 'tool' ? 'text-xs text-muted-foreground whitespace-nowrap' : '',
+        )}>
         {/* Check message.content is string or MessageContentComplex[]*/}
         {typeof message.content === 'string' ? (
           <StringMessage content={message.content} />
@@ -56,6 +60,16 @@ export const MessageContainer = ({ message }: { message: Message }) => {
                 return null;
             }
           })
+        )}
+
+        {message.type === 'ai' && (message as any).tool_call_chunks?.length > 0 && (
+          <div className="text-xs text-muted-foreground mt-2 border-l-2 border-gray-300 pl-2">
+            {(message as any).tool_call_chunks.map((tool: any, idx: number) => (
+              <div key={idx}>
+                🔧 Called tool: <strong>{tool.name}</strong>
+              </div>
+            ))}
+          </div>
         )}
 
         {/* {(message.content as string).split('\n').map((line, index) => (
