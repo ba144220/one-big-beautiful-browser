@@ -1,5 +1,5 @@
 {
-  "node_version": "20",
+  "node_version": "22",
   "dependencies": ["."],
   "graphs": {
     "agent": "./src/react-agent/graph.ts:agentGraph",
