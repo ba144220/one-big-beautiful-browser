@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { BrowserControlType } from './browser-control-types.js';
 
 // Get All Tabs Info
 export type GetAllTabsInfo = {
@@ -57,4 +58,5 @@ export type InterruptType =
   | GetTabMarkdownContentsByIds
   | GetActiveTabSnapshot
   | GetTabSnapshotById
-  | GetTabSnapshotsByIds;
+  | GetTabSnapshotsByIds
+  | BrowserControlType;
