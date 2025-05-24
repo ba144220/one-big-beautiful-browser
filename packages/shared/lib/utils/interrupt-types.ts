@@ -19,4 +19,12 @@ export type GetTabViewById = {
   input: z.infer<typeof GetTabViewByIdSchema>;
 };
 
-export type InterruptType = GetTabViewById | GetAllTabsInfo | GetActiveTabView;
+export const GetTabViewsByIdsSchema = z.object({
+  ids: z.array(z.string()).describe('The IDs of the tabs to get the views of.'),
+});
+export type GetTabViewsByIds = {
+  name: 'getTabViewsByIds';
+  input: z.infer<typeof GetTabViewsByIdsSchema>;
+};
+
+export type InterruptType = GetTabViewById | GetAllTabsInfo | GetActiveTabView | GetTabViewsByIds;
