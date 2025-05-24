@@ -6,7 +6,6 @@ import type { InterruptType } from '@extension/shared';
 import UserInput from '@src/components/chat/user-input';
 import { handleSubmit } from '@src/utils/handle-submit';
 import { useSelectedTabs } from '@src/hooks/use-selected-tabs';
-import { useEffect } from 'react';
 
 export default function Chatroom() {
   const thread = useStream<
