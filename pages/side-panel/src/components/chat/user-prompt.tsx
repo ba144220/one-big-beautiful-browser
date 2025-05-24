@@ -1,4 +1,4 @@
-import { FormEvent, useState, useRef } from 'react';
+import { type FormEvent, useState, useRef } from 'react';
 import { Button } from '@src/components/ui/button';
 import { Textarea } from '@src/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@src/components/ui/select';
@@ -49,12 +49,6 @@ export default function UserPrompt({ onSubmit, isLoading, onStop, context = [] }
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
-  };
-
-  const modelDisplayNames = {
-    'claude-4': 'Claude 4',
-    'chatgpt-4o': 'ChatGPT 4o',
-    'gemini-2.5-pro': 'Gemini 2.5 Pro',
   };
 
   return (

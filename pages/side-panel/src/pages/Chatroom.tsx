@@ -1,7 +1,7 @@
 import { useStream } from '@langchain/langgraph-sdk/react';
 import type { Message } from '@langchain/langgraph-sdk';
-import { MessageContainer } from '../components/chat/messageContainer';
-import UserPrompt from '../components/chat/userPrompt';
+import { MessageContainer } from '../components/chat/message-container';
+import UserPrompt from '../components/chat/user-prompt';
 export default function Chatroom() {
   const thread = useStream<{ messages: Message[] }>({
     apiUrl: 'http://localhost:2024',
@@ -17,7 +17,7 @@ export default function Chatroom() {
         ))}
       </div>
       <UserPrompt
-        onSubmit={(message, mode, model, image) => thread.submit({ messages: [{ type: 'human', content: message }] })}
+        onSubmit={message => thread.submit({ messages: [{ type: 'human', content: message }] })}
         isLoading={thread.isLoading}
         onStop={() => thread.stop()}
         context={['Current file', 'Project context']}
