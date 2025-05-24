@@ -1,21 +1,26 @@
 declare module '@langchain/langgraph-sdk' {
   type ImageDetail = 'auto' | 'low' | 'high';
+  type TabMetadata = {
+    tabId: number;
+    tabTitle: string;
+    tabFaviconUrl: string;
+  };
   type MessageContentImageUrl = {
     type: 'image_url';
     image_url:
       | string
       | {
           url: string;
-          detail?: ImageDetail | undefined;
+          detail?: ImageDetail;
         };
     hidden?: boolean;
-    tabId?: string;
+    tabMetadata?: TabMetadata;
   };
   type MessageContentText = {
     type: 'text';
     text: string;
     hidden?: boolean;
-    tabId?: string;
+    tabMetadata?: TabMetadata;
   };
 
   type MessageContentComplex = MessageContentText | MessageContentImageUrl;

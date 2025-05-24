@@ -13,19 +13,25 @@ export const handleSubmit = async (
   const allComplexMessages = allHumanMessages
     .filter(message => typeof message.content !== 'string')
     .flatMap(message => message.content as MessageContentComplex[]);
-  const allTabIds = allComplexMessages.flatMap(message => message.tabId).filter(tabId => tabId !== undefined);
-  const filteredSelectedTabs = selectedTabs.filter(tab => !allTabIds.includes(tab.id!.toString()));
+  const allTabIds = allComplexMessages
+    .flatMap(message => message?.tabMetadata?.tabId)
+    .filter(tabId => tabId !== undefined);
+  const filteredSelectedTabs = selectedTabs.filter(tab => !allTabIds.includes(tab.id!));
 
   // Get all selected tabs
   const tabSnapshots: MessageContentComplex[] = [];
 
   for (const tab of filteredSelectedTabs) {
-    const tabSnapshot = await getTabSnapshot(tab.id!.toString());
+    const tabSnapshot = await getTabSnapshot(tab.id?.toString() ?? '');
     if (typeof tabSnapshot === 'string') {
       tabSnapshots.push({ type: 'text', text: tabSnapshot });
     } else {
       tabSnapshot.forEach(snapshot => {
-        tabSnapshots.push({ ...snapshot, hidden: true, tabId: tab.id!.toString() });
+        tabSnapshots.push({
+          ...snapshot,
+          hidden: true,
+          tabMetadata: { tabId: tab.id!, tabTitle: tab.title!, tabFaviconUrl: tab.favIconUrl! },
+        });
       });
     }
   }
