@@ -33,12 +33,14 @@
     "clsx": "^2.1.1",
     "lucide-react": "^0.511.0",
     "tailwind-merge": "^2.5.2",
+    "turndown": "^7.2.0",
     "tw-animate-css": "^1.3.0"
   },
   "devDependencies": {
     "@extension/tailwindcss-config": "workspace:*",
     "@extension/tsconfig": "workspace:*",
-    "@extension/vite-config": "workspace:*"
+    "@extension/vite-config": "workspace:*",
+    "@types/turndown": "^5.0.5"
   },
   "postcss": {
     "plugins": {
