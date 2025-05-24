@@ -1,5 +1,5 @@
 import { type InterruptType, type MessageContent } from '@extension/shared';
-import { getTabView, getAllTabsInfo } from './tools';
+import { getTabView, getAllTabsInfo, getTabViews } from './tools';
 
 export async function handleInterrupt(interruptValue: InterruptType): Promise<MessageContent> {
   switch (interruptValue.name) {
@@ -9,6 +9,8 @@ export async function handleInterrupt(interruptValue: InterruptType): Promise<Me
       return getAllTabsInfo();
     case 'getTabViewById':
       return getTabView(interruptValue.input.id);
+    case 'getTabViewsByIds':
+      return getTabViews(interruptValue.input.ids);
     default:
       return [];
   }
