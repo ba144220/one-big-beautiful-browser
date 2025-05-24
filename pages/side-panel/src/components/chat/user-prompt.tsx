@@ -52,7 +52,7 @@ export default function UserPrompt({ onSubmit, isLoading, onStop, context = [] }
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg">
+    <div className="bg-white border-t border-gray-200 shadow-lg">
       {/* Context Display */}
       {context.length > 0 && (
         <div className="px-4 py-3 bg-gray-50/50 border-b border-gray-100">

@@ -5,6 +5,8 @@ import {
   type GetAllTabsInfo,
   type GetTabViewById,
   GetTabViewByIdSchema,
+  type GetTabViewsByIds,
+  GetTabViewsByIdsSchema,
   type MessageContent,
 } from '@extension/shared';
 import TurndownService from 'turndown';
@@ -85,4 +87,20 @@ const getTabViewById = tool(
   },
 );
 
-export const tools = [getActiveTabView, getAllTabsInfo, getTabViewById];
+const getTabViewsByIds = tool(
+  async ({ ids }) => {
+    const response = await interrupt<GetTabViewsByIds, MessageContent>({
+      name: 'getTabViewsByIds',
+      input: { ids },
+    });
+
+    return response;
+  },
+  {
+    name: 'getTabViewsByIds',
+    description: 'Simultaneously get views of multiple tabs by IDs (from getAllTabs) converted to markdown format.',
+    schema: GetTabViewsByIdsSchema,
+  },
+);
+
+export const tools = [getActiveTabView, getAllTabsInfo, getTabViewById, getTabViewsByIds];
