@@ -1,4 +1,4 @@
-import type { BrowserControlType, type MessageContent } from '@extension/shared';
+import type { BrowserControlType, MessageContent } from '@extension/shared';
 
 import { createEnhancedHtmlSnapshot } from './enhanced-snapshot';
 import { htmlToMarkdown } from './markdown';

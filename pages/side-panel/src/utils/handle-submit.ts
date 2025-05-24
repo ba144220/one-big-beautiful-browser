@@ -13,10 +13,25 @@ export const handleSubmit = async (
   const allComplexMessages = allHumanMessages
     .filter(message => typeof message.content !== 'string')
     .flatMap(message => message.content as MessageContentComplex[]);
-  const allTabIds = allComplexMessages
-    .flatMap(message => message?.tabMetadata?.tabId)
-    .filter(tabId => tabId !== undefined);
-  const filteredSelectedTabs = selectedTabs.filter(tab => !allTabIds.includes(tab.id!));
+  const allTabMetadata = allComplexMessages
+    .flatMap(message => message?.tabMetadata)
+    .filter(tabMetadata => tabMetadata !== undefined);
+
+  const filteredSelectedTabs = selectedTabs.filter(tab => {
+    // If the tab id is not in the messages, add it to the LLM input
+    const tabId = tab.id || 0;
+    // Find tab metadata with the tab id
+    const tabMetadata = allTabMetadata.find(tabMetadata => tabMetadata.tabId === tabId);
+    if (!tabMetadata) {
+      return true;
+    }
+    // Check if the title is the same and the url
+    if (tabMetadata.tabTitle !== tab.title || tabMetadata.tabUrl !== tab.url) {
+      return true;
+    }
+
+    return false;
+  });
 
   // Get all selected tabs
   const tabSnapshots: MessageContentComplex[] = [];
@@ -27,10 +42,13 @@ export const handleSubmit = async (
       tabSnapshots.push({ type: 'text', text: tabSnapshot });
     } else {
       tabSnapshot.forEach(snapshot => {
+        if (!tab.id || !tab.title || !tab.url) {
+          return;
+        }
         tabSnapshots.push({
           ...snapshot,
           hidden: true,
-          tabMetadata: { tabId: tab.id!, tabTitle: tab.title!, tabFaviconUrl: tab.favIconUrl! },
+          tabMetadata: { tabId: tab.id, tabTitle: tab.title, tabFaviconUrl: tab.favIconUrl!, tabUrl: tab.url },
         });
       });
     }
