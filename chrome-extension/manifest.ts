@@ -29,8 +29,8 @@ const manifest = {
   },
   version: packageJson.version,
   description: '__MSG_extensionDescription__',
-  host_permissions: ['<all_urls>'],
-  permissions: ['storage', 'scripting', 'tabs', 'notifications', 'sidePanel'],
+  host_permissions: [`<all_urls>`],
+  permissions: ['storage', 'scripting', 'tabs', 'notifications', 'sidePanel', 'cookies', 'debugger'],
   action: {
     default_icon: 'icon-34.png',
   },
@@ -57,6 +57,7 @@ const manifest = {
     service_worker: 'background.js',
     type: 'module',
   },
+  key: process.env.CEB_CRX_PUBLIC_KEY,
 } satisfies chrome.runtime.ManifestV3;
 
 export default manifest;
