@@ -52,7 +52,6 @@ export default function Chatroom() {
       </div>
       <div className="px-2 pb-2">
         <UserInput
-          scrollRef={scrollRef}
           onSubmit={async e => {
             e.preventDefault();
             const form = e.target as HTMLFormElement;
