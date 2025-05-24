@@ -19,6 +19,10 @@ export const ImageMessage = ({ content }: { content: string }) => {
 };
 
 export const MessageContainer = ({ message }: { message: Message }) => {
+  if (message.type === 'tool') {
+    return null;
+  }
+
   if (message.type === 'human') {
     if (typeof message.content === 'string') {
       return <UserInput isActive={false} initialValue={message.content} />;
@@ -37,11 +41,7 @@ export const MessageContainer = ({ message }: { message: Message }) => {
   }
   return (
     <div key={message.id} className={cn('flex flex-row gap-2 justify-start')}>
-      <div
-        className={cn(
-          'flex flex-col gap-2',
-          message.type === 'tool' ? 'text-xs text-muted-foreground whitespace-nowrap' : '',
-        )}>
+      <div className={cn('flex flex-col gap-2')}>
         {/* Check message.content is string or MessageContentComplex[]*/}
         {typeof message.content === 'string' ? (
           <StringMessage content={message.content} />
