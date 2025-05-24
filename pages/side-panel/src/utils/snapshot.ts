@@ -74,6 +74,21 @@ export function createHtmlSnapshot() {
       return false;
     }
 
+    // Helper function to check if an element is a container
+    function isContainerElement(element: Element): boolean {
+      const containerTags = new Set(['div', 'section', 'article', 'main', 'aside', 'header', 'footer', 'nav', 'span']);
+      return containerTags.has(element.tagName.toLowerCase());
+    }
+
+    // Helper function to check if an element is empty
+    function isEmptyElement(element: Element): boolean {
+      // Element has no children
+      if (element.children.length === 0 && (!element.textContent || element.textContent.trim() === '')) {
+        return true;
+      }
+      return false;
+    }
+
     // Elements to skip entirely
     const SKIP_TAGS = new Set([
       'script',
@@ -149,7 +164,7 @@ export function createHtmlSnapshot() {
       const remainingElements = Array.from(processedBody.querySelectorAll('*'));
       remainingElements.forEach(el => {
         // Keep only essential attributes
-        const attributesToKeep = ['href', 'value', 'placeholder', 'type', 'role'];
+        const attributesToKeep = ['value', 'placeholder', 'type'];
         Array.from(el.attributes).forEach(attr => {
           if (!attributesToKeep.includes(attr.name)) {
             el.removeAttribute(attr.name);
@@ -157,7 +172,49 @@ export function createHtmlSnapshot() {
         });
       });
 
-      // Step 4: Minify the HTML output
+      // Step 4: Remove empty elements
+      const emptyElements: Element[] = [];
+      Array.from(processedBody.querySelectorAll('*')).forEach(el => {
+        if (isEmptyElement(el)) {
+          emptyElements.push(el);
+        }
+      });
+
+      // Remove empty elements (in reverse order to avoid affecting traversal)
+      for (let i = emptyElements.length - 1; i >= 0; i--) {
+        const el = emptyElements[i];
+        if (el.parentNode) {
+          el.parentNode.removeChild(el);
+        }
+      }
+
+      // Step 5: Flatten nested container elements
+      function flattenContainers(element: Element) {
+        const children = Array.from(element.children);
+
+        // Process children first (depth-first)
+        children.forEach(child => flattenContainers(child));
+
+        // Check if this is a container with exactly one child that is also a container
+        if (isContainerElement(element) && element.children.length === 1) {
+          const child = element.firstElementChild!;
+
+          // If the child is also a container, we can flatten
+          if (isContainerElement(child) && element.parentNode) {
+            // Move all of child's children to the parent
+            while (child.firstChild) {
+              element.insertBefore(child.firstChild, child);
+            }
+            // Remove the now-empty child
+            element.removeChild(child);
+          }
+        }
+      }
+
+      // Apply container flattening
+      flattenContainers(processedBody);
+
+      // Step 6: Minify the HTML output
       function minifyHtml(html: string): string {
         return (
           html
