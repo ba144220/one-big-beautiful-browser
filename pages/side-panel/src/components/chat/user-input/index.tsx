@@ -4,7 +4,6 @@ import { ArrowUpIcon, ImageIcon, SquareIcon } from 'lucide-react';
 import { type TabMetadata } from '@langchain/langgraph-sdk';
 import { cn } from '@src/lib/utils';
 import { useState } from 'react';
-import { scrollDownByHeight } from '@src/utils/scroll';
 export type UserInputProps = {
   onSubmit?: (event: React.FormEvent<HTMLFormElement>) => void;
   isLoading?: boolean;
@@ -24,7 +23,6 @@ export default function UserInput({
   onBadgeRemove = () => {},
   isActive = true,
   initialValue = '',
-  scrollRef,
 }: UserInputProps) {
   const [inputValue, setInputValue] = useState<string>(initialValue);
 
