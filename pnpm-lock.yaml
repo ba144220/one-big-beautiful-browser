@@ -153,9 +153,6 @@ importers:
       '@langchain/langgraph-sdk':
         specifier: ^0.0.78
         version: 0.0.78(@langchain/core@0.3.56)(react@19.0.0)
-      turndown:
-        specifier: ^7.2.0
-        version: 7.2.0
       zod:
         specifier: ^3.25.9
         version: 3.25.9
@@ -163,9 +160,6 @@ importers:
       '@extension/shared':
         specifier: workspace:*
         version: link:../../packages/shared
-      '@types/turndown':
-        specifier: ^5.0.5
-        version: 5.0.5
 
   apps/web:
     dependencies:
@@ -459,6 +453,9 @@ importers:
       tailwind-merge:
         specifier: ^2.5.2
         version: 2.5.2
+      turndown:
+        specifier: ^7.2.0
+        version: 7.2.0
       tw-animate-css:
         specifier: ^1.3.0
         version: 1.3.0
@@ -472,6 +469,9 @@ importers:
       '@extension/vite-config':
         specifier: workspace:*
         version: link:../../packages/vite-config
+      '@types/turndown':
+        specifier: ^5.0.5
+        version: 5.0.5
 
   tests/e2e:
     devDependencies:
@@ -8280,7 +8280,7 @@ snapshots:
 
   '@typescript/vfs@1.6.1(typescript@5.8.1-rc)':
     dependencies:
-      debug: 4.3.7(supports-color@8.1.1)
+      debug: 4.3.7
       typescript: 5.8.1-rc
     transitivePeerDependencies:
       - supports-color
@@ -9394,6 +9394,10 @@ snapshots:
     dependencies:
       ms: 2.1.3
 
+  debug@4.3.7:
+    dependencies:
+      ms: 2.1.3
+
   debug@4.3.7(supports-color@8.1.1):
     dependencies:
       ms: 2.1.3
@@ -10247,7 +10251,7 @@ snapshots:
 
   extract-zip@2.0.1:
     dependencies:
-      debug: 4.3.7(supports-color@8.1.1)
+      debug: 4.3.7
       get-stream: 5.2.0
       yauzl: 2.10.0
     optionalDependencies:
