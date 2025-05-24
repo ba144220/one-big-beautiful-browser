@@ -1,27 +1,26 @@
-type ImageDetail = 'auto' | 'low' | 'high';
-type MessageContentImageUrl = {
-  type: 'image_url';
-  image_url:
-    | string
-    | {
-        url: string;
-        detail?: ImageDetail | undefined;
-      };
-  hidden?: boolean;
-  tabId?: string;
-};
-type MessageContentText = {
-  type: 'text';
-  text: string;
-  hidden?: boolean;
-  tabId?: string;
-};
-
-type MessageContentComplex = MessageContentText | MessageContentImageUrl;
-type MessageContent = string | MessageContentComplex[];
-
 declare module '@langchain/langgraph-sdk' {
+  type ImageDetail = 'auto' | 'low' | 'high';
+  type MessageContentImageUrl = {
+    type: 'image_url';
+    image_url:
+      | string
+      | {
+          url: string;
+          detail?: ImageDetail | undefined;
+        };
+    hidden?: boolean;
+    tabId?: string;
+  };
+  type MessageContentText = {
+    type: 'text';
+    text: string;
+    hidden?: boolean;
+    tabId?: string;
+  };
+
+  type MessageContentComplex = MessageContentText | MessageContentImageUrl;
   type MessageContent = string | MessageContentComplex[];
+
   type Message = HumanMessage | AIMessage | ToolMessage | SystemMessage | FunctionMessage | RemoveMessage;
   type HumanMessage = {
     type: 'human';
