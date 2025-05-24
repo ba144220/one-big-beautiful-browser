@@ -8,6 +8,11 @@ import {
   type GetTabMarkdownContentsByIds,
   GetTabMarkdownContentsByIdsSchema,
   type MessageContent,
+  type GetActiveTabSnapshot,
+  type GetTabSnapshotById,
+  GetTabSnapshotByIdSchema,
+  type GetTabSnapshotsByIds,
+  GetTabSnapshotsByIdsSchema,
 } from '@extension/shared';
 
 const getAllTabsInfo = tool(
@@ -70,9 +75,58 @@ const getTabMarkdownContentsByIds = tool(
   },
 );
 
+const getActiveTabSnapshot = tool(
+  async () => {
+    const response = await interrupt<GetActiveTabSnapshot, MessageContent>({
+      name: 'getActiveTabSnapshot',
+    });
+
+    return response;
+  },
+  {
+    name: 'getActiveTabSnapshot',
+    description: 'Get a simplified HTML snapshot of the active tab in the browser',
+  },
+);
+
+const getTabSnapshotById = tool(
+  async ({ id }) => {
+    const response = await interrupt<GetTabSnapshotById, MessageContent>({
+      name: 'getTabSnapshotById',
+      input: { id },
+    });
+
+    return response;
+  },
+  {
+    name: 'getTabSnapshotById',
+    description: 'Get a simplified HTML snapshot of a tab by ID.',
+    schema: GetTabSnapshotByIdSchema,
+  },
+);
+
+const getTabSnapshotsByIds = tool(
+  async ({ ids }) => {
+    const response = await interrupt<GetTabSnapshotsByIds, MessageContent>({
+      name: 'getTabSnapshotsByIds',
+      input: { ids },
+    });
+
+    return response;
+  },
+  {
+    name: 'getTabSnapshotsByIds',
+    description: 'Simultaneously get simplified HTML snapshots of multiple tabs by IDs.',
+    schema: GetTabSnapshotsByIdsSchema,
+  },
+);
+
 export const tools = [
   getActiveTabMarkdownContent,
   getAllTabsInfo,
   getTabMarkdownContentById,
   getTabMarkdownContentsByIds,
+  getActiveTabSnapshot,
+  getTabSnapshotById,
+  getTabSnapshotsByIds,
 ];
