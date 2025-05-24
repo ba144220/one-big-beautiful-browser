@@ -1,22 +1,31 @@
-import { useSelectedTabs } from '@src/hooks/use-selected-tabs';
 import TabBadge from './tab-badge';
 import { TabSelection } from './tab-selection';
 import { ArrowUpIcon, ImageIcon, SquareIcon } from 'lucide-react';
+import { type TabMetadata } from '@langchain/langgraph-sdk';
 export type UserInputProps = {
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   isLoading: boolean;
   onStop: () => void;
+  tabMetadata: TabMetadata[];
+  onBadgeRemove: (tabId: number) => void;
 };
 
-export default function UserInput({ onSubmit, isLoading, onStop }: UserInputProps) {
-  const { selectedTabs } = useSelectedTabs();
+export default function UserInput({ onSubmit, isLoading, onStop, tabMetadata, onBadgeRemove }: UserInputProps) {
   return (
     <div className="bg-background rounded-md pt-2 pb-1">
       <form onSubmit={onSubmit}>
         <div className="px-2 flex flex-wrap gap-1">
           <TabSelection />
-          {selectedTabs.map(tab => {
-            return <TabBadge key={tab.id} tab={tab} />;
+          {tabMetadata.map(tab => {
+            return (
+              <TabBadge
+                key={tab.tabId}
+                tabTitle={tab.tabTitle ?? ''}
+                tabFaviconUrl={tab.tabFaviconUrl ?? ''}
+                tabId={tab.tabId ?? 0}
+                onRemove={onBadgeRemove}
+              />
+            );
           })}
         </div>
         <div className="w-full flex flex-row pt-1">

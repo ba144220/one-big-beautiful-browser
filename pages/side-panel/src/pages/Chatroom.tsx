@@ -21,7 +21,7 @@ export default function Chatroom() {
 
   useInterrupt(thread);
 
-  const { selectedTabs } = useSelectedTabs();
+  const { selectedTabs, removeSelectedTabById } = useSelectedTabs();
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-muted">
@@ -42,6 +42,14 @@ export default function Chatroom() {
           }}
           isLoading={thread.isLoading}
           onStop={() => thread.stop()}
+          tabMetadata={selectedTabs.map(tab => ({
+            tabId: tab.id!,
+            tabTitle: tab.title!,
+            tabFaviconUrl: tab.favIconUrl!,
+          }))}
+          onBadgeRemove={tabId => {
+            removeSelectedTabById(tabId);
+          }}
         />
       </div>
     </div>
