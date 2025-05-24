@@ -2,6 +2,7 @@ import { type Message } from '@langchain/langgraph-sdk';
 import { cn } from '@src/lib/utils';
 import React from 'react';
 import { Img } from 'react-image';
+import UserInput from './user-input';
 
 export const StringMessage = ({ content }: { content: string }) => {
   return (
@@ -18,10 +19,24 @@ export const ImageMessage = ({ content }: { content: string }) => {
 };
 
 export const MessageContainer = ({ message }: { message: Message }) => {
+  if (message.type === 'human') {
+    if (typeof message.content === 'string') {
+      return <UserInput isActive={false} initialValue={message.content} />;
+    }
+    // Get all the tab metadata from the message.content
+    const tabMetadata = message.content
+      .map(content => content.tabMetadata)
+      .filter(tabMetadata => tabMetadata !== undefined);
+    const text = message.content
+      .filter(content => !content.tabMetadata)
+      .filter(content => content.type === 'text')
+      .flatMap(content => content.text)
+      .join('\n');
+
+    return <UserInput isActive={false} initialValue={text} tabMetadata={tabMetadata} />;
+  }
   return (
-    <div
-      key={message.id}
-      className={cn('flex flex-row gap-2', message.type === 'human' ? 'justify-end' : 'justify-start')}>
+    <div key={message.id} className={cn('flex flex-row gap-2 justify-start')}>
       <div className={cn('flex flex-col gap-2', message.type === 'tool' ? 'text-xs text-muted-foreground' : '')}>
         {/* Check message.content is string or MessageContentComplex[]*/}
         {typeof message.content === 'string' ? (

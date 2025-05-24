@@ -6,17 +6,27 @@ export default function TabBadge({
   tabFaviconUrl,
   tabId,
   onRemove,
+  isActive = true,
 }: {
   tabTitle: string;
   tabFaviconUrl: string;
   tabId: number;
   onRemove: (tabId: number) => void;
+  isActive?: boolean;
 }) {
   return (
     <button
       key={tabId}
-      className="h-5 py-[1px] px-1 text-[10px] border rounded-sm flex flex-row justify-center items-center gap-1 cursor-pointer group hover:bg-accent"
-      onClick={() => onRemove(tabId)}>
+      className={cn(
+        'h-5 py-[1px] px-1 text-[10px] border rounded-sm flex flex-row justify-center items-center gap-1  ',
+        isActive && 'group hover:bg-accent cursor-pointer',
+      )}
+      onClick={() => {
+        if (isActive) {
+          onRemove(tabId);
+        }
+      }}
+      disabled={!isActive}>
       <div className="flex flex-row items-center justify-center">
         <Img src={[tabFaviconUrl ?? '', '/earth.png']} alt="favicon" className={cn('w-3 h-3 group-hover:hidden')} />
 
