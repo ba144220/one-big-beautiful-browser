@@ -1,30 +1,34 @@
 import { z } from 'zod';
 
-// Get Active Tab View
-export type GetActiveTabView = {
-  name: 'getActiveTabView';
-};
-
 // Get All Tabs Info
 export type GetAllTabsInfo = {
   name: 'getAllTabsInfo';
 };
 
+// Get Active Tab View
+export type GetActiveTabMarkdownContent = {
+  name: 'getActiveTabMarkdownContent';
+};
+
 // Get Tab By Id
-export const GetTabViewByIdSchema = z.object({
+export const GetTabMarkdownContentByIdSchema = z.object({
   id: z.string().describe('The ID of the tab to get the view of.'),
 });
-export type GetTabViewById = {
-  name: 'getTabViewById';
-  input: z.infer<typeof GetTabViewByIdSchema>;
+export type GetTabMarkdownContentById = {
+  name: 'getTabMarkdownContentById';
+  input: z.infer<typeof GetTabMarkdownContentByIdSchema>;
 };
 
-export const GetTabViewsByIdsSchema = z.object({
+export const GetTabMarkdownContentsByIdsSchema = z.object({
   ids: z.array(z.string()).describe('The IDs of the tabs to get the views of.'),
 });
-export type GetTabViewsByIds = {
-  name: 'getTabViewsByIds';
-  input: z.infer<typeof GetTabViewsByIdsSchema>;
+export type GetTabMarkdownContentsByIds = {
+  name: 'getTabMarkdownContentsByIds';
+  input: z.infer<typeof GetTabMarkdownContentsByIdsSchema>;
 };
 
-export type InterruptType = GetTabViewById | GetAllTabsInfo | GetActiveTabView | GetTabViewsByIds;
+export type InterruptType =
+  | GetAllTabsInfo
+  | GetActiveTabMarkdownContent
+  | GetTabMarkdownContentById
+  | GetTabMarkdownContentsByIds;

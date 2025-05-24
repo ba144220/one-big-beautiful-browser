@@ -1,61 +1,14 @@
 import { tool } from '@langchain/core/tools';
 import { interrupt } from '@langchain/langgraph';
 import {
-  type GetActiveTabView,
+  type GetActiveTabMarkdownContent,
   type GetAllTabsInfo,
-  type GetTabViewById,
-  GetTabViewByIdSchema,
-  type GetTabViewsByIds,
-  GetTabViewsByIdsSchema,
+  type GetTabMarkdownContentById,
+  GetTabMarkdownContentByIdSchema,
+  type GetTabMarkdownContentsByIds,
+  GetTabMarkdownContentsByIdsSchema,
   type MessageContent,
 } from '@extension/shared';
-import TurndownService from 'turndown';
-
-// Initialize turndown service for HTML to Markdown conversion
-const turndownService = new TurndownService({
-  headingStyle: 'atx',
-  codeBlockStyle: 'fenced',
-  emDelimiter: '*',
-});
-
-// Helper function to convert HTML to Markdown
-const htmlToMarkdown = (html: string): string => {
-  return turndownService.turndown(html);
-};
-
-// Helper function to process HTML content from interrupt calls
-const processHtmlContent = (content: MessageContent): MessageContent => {
-  if (typeof content === 'string') {
-    return content;
-  }
-
-  return content.map(item => {
-    if (item.type === 'text' && item.text) {
-      // Check if the text appears to be HTML (contains tags)
-      if (/<[a-z][\s\S]*>/i.test(item.text)) {
-        return {
-          type: 'text',
-          text: htmlToMarkdown(item.text),
-        };
-      }
-    }
-    return item;
-  });
-};
-
-const getActiveTabView = tool(
-  async () => {
-    const response = await interrupt<GetActiveTabView, MessageContent>({
-      name: 'getActiveTabView',
-    });
-
-    return processHtmlContent(response);
-  },
-  {
-    name: 'getActiveTabView',
-    description: 'Get the view of the active tab in the browser converted to markdown format',
-  },
-);
 
 const getAllTabsInfo = tool(
   async () => {
@@ -67,40 +20,59 @@ const getAllTabsInfo = tool(
   },
   {
     name: 'getAllTabsInfo',
-    description: "Get all tabs' info in the browser. Return a list of tabs with their title, url, and ID",
+    description: "Get all tabs' metadata in the browser. Return a list of tabs with their title, url, and ID",
   },
 );
 
-const getTabViewById = tool(
+const getActiveTabMarkdownContent = tool(
+  async () => {
+    const response = await interrupt<GetActiveTabMarkdownContent, MessageContent>({
+      name: 'getActiveTabMarkdownContent',
+    });
+
+    return response;
+  },
+  {
+    name: 'getActiveTabMarkdownContent',
+    description: 'Get the content of the active tab in the browser, converted to markdown format',
+  },
+);
+
+const getTabMarkdownContentById = tool(
   async ({ id }) => {
-    const response = await interrupt<GetTabViewById, MessageContent>({
-      name: 'getTabViewById',
+    const response = await interrupt<GetTabMarkdownContentById, MessageContent>({
+      name: 'getTabMarkdownContentById',
       input: { id },
     });
 
-    return processHtmlContent(response);
+    return response;
   },
   {
-    name: 'getTabViewById',
-    description: 'Get a view of a tab by ID (from getAllTabs) converted to markdown format.',
-    schema: GetTabViewByIdSchema,
+    name: 'getTabMarkdownContentById',
+    description: 'Get the content of a tab by ID, converted to markdown format.',
+    schema: GetTabMarkdownContentByIdSchema,
   },
 );
 
-const getTabViewsByIds = tool(
+const getTabMarkdownContentsByIds = tool(
   async ({ ids }) => {
-    const response = await interrupt<GetTabViewsByIds, MessageContent>({
-      name: 'getTabViewsByIds',
+    const response = await interrupt<GetTabMarkdownContentsByIds, MessageContent>({
+      name: 'getTabMarkdownContentsByIds',
       input: { ids },
     });
 
     return response;
   },
   {
-    name: 'getTabViewsByIds',
-    description: 'Simultaneously get views of multiple tabs by IDs (from getAllTabs) converted to markdown format.',
-    schema: GetTabViewsByIdsSchema,
+    name: 'getTabMarkdownContentsByIds',
+    description: 'Simultaneously get views of multiple tabs by IDs, converted to markdown format.',
+    schema: GetTabMarkdownContentsByIdsSchema,
   },
 );
 
-export const tools = [getActiveTabView, getAllTabsInfo, getTabViewById, getTabViewsByIds];
+export const tools = [
+  getActiveTabMarkdownContent,
+  getAllTabsInfo,
+  getTabMarkdownContentById,
+  getTabMarkdownContentsByIds,
+];
