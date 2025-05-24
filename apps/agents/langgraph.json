@@ -2,8 +2,7 @@
   "node_version": "20",
   "dependencies": ["."],
   "graphs": {
-    "agent": "./src/react-agent/graph.ts:agentGraph",
-    "ask": "./src/react-agent/graph.ts:askGraph"
+    "agent": "./src/react-agent/graph.ts:graph"
   },
   "env": ".env"
 }
