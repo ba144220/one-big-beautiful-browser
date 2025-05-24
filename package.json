@@ -1,13 +1,13 @@
 {
-  "name": "yuchi-crappy-ai-extension",
+  "name": "one-big-beautiful-browser",
   "version": "0.0.1",
-  "description": "Yuchi's Crappy AI Extension",
+  "description": "One Big Beautiful Browser Extension",
   "license": "MIT",
   "private": true,
   "sideEffects": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/ba144220/crappy-ai-browser-extension.git"
+    "url": "https://github.com/ba144220/one-big-beautiful-browser.git"
   },
   "type": "module",
   "scripts": {
