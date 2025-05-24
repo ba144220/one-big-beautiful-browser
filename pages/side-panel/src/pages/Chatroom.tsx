@@ -20,7 +20,7 @@ export default function Chatroom() {
   useInterrupt(thread);
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden">
+    <div className="h-screen flex flex-col overflow-hidden bg-muted">
       <div className="overflow-y-auto pb-4 px-4 flex flex-col gap-2 flex-1">
         {thread.messages.map(message => (
           <MessageContainer key={message.id} message={message} />
