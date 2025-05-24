@@ -1,6 +1,7 @@
 /**
  * Creates a simplified HTML snapshot of a webpage by removing unnecessary elements
  * and preserving only the essential content for LLM processing.
+ * The output is minified by default to reduce size.
  */
 export function createHtmlSnapshot() {
   return function script() {
@@ -156,7 +157,22 @@ export function createHtmlSnapshot() {
         });
       });
 
-      return processedBody.innerHTML;
+      // Step 4: Minify the HTML output
+      function minifyHtml(html: string): string {
+        return (
+          html
+            // Remove comments
+            .replace(/<!--[\s\S]*?-->/g, '')
+            // Remove whitespace between tags
+            .replace(/>\s+</g, '><')
+            // Remove leading and trailing whitespace
+            .replace(/^\s+|\s+$/g, '')
+            // Collapse multiple whitespace characters to a single space within text nodes
+            .replace(/\s{2,}/g, ' ')
+        );
+      }
+
+      return minifyHtml(processedBody.innerHTML);
     }
 
     return processDocument();
