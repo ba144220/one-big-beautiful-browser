@@ -3,8 +3,8 @@
  * and preserving only the essential content for LLM processing.
  * The output is minified by default to reduce size.
  */
-export function createHtmlSnapshot(characterLimit = 15000) {
-  return function script() {
+export function createHtmlSnapshot() {
+  return function script(characterLimit = 15000) {
     // Helper functions to identify important elements
     function isTextNode(node: Node): boolean {
       return node.nodeType === Node.TEXT_NODE && !!node.textContent && node.textContent.trim().length > 0;

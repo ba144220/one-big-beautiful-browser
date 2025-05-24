@@ -5,6 +5,7 @@ import {
   getTabMarkdownContents,
   getTabSnapshot,
   getTabSnapshots,
+  handleBrowserControl,
 } from './tools';
 
 export async function handleInterrupt(interruptValue: InterruptType): Promise<MessageContent> {
@@ -23,6 +24,18 @@ export async function handleInterrupt(interruptValue: InterruptType): Promise<Me
       return getTabSnapshot(interruptValue.input.id);
     case 'getTabSnapshotsByIds':
       return getTabSnapshots(interruptValue.input.ids);
+    // Browser control actions
+    case 'clickElement':
+    case 'typeText':
+    case 'scrollPage':
+    case 'scrollToElement':
+    case 'hoverElement':
+    case 'pressKey':
+    case 'waitForElement':
+    case 'getElementInfo':
+    case 'navigateToUrl':
+    case 'takeScreenshot':
+      return handleBrowserControl(interruptValue);
     default:
       return [];
   }
