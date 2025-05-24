@@ -4,7 +4,6 @@ import { MessageContainer } from '../components/chat/message-container';
 import useInterrupt from '../hooks/useInterrupt';
 import type { InterruptType } from '@extension/shared';
 import UserInput from '@src/components/chat/user-input';
-import { useSelectedTabs } from '../hooks/use-selected-tabs';
 
 export default function Chatroom() {
   const thread = useStream<
@@ -19,8 +18,6 @@ export default function Chatroom() {
   });
 
   useInterrupt(thread);
-
-  const { selectedTabs } = useSelectedTabs();
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
@@ -40,7 +37,6 @@ export default function Chatroom() {
           }}
           isLoading={thread.isLoading}
           onStop={() => thread.stop()}
-          selectedTabs={selectedTabs}
         />
       </div>
     </div>

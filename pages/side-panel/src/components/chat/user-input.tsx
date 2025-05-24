@@ -1,11 +1,13 @@
+import { useSelectedTabs } from '@src/hooks/use-selected-tabs';
+
 export type UserInputProps = {
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   isLoading: boolean;
   onStop: () => void;
-  selectedTabs: chrome.tabs.Tab[];
 };
 
-export default function UserInput({ onSubmit, isLoading, onStop, selectedTabs }: UserInputProps) {
+export default function UserInput({ onSubmit, isLoading, onStop }: UserInputProps) {
+  const { selectedTabs } = useSelectedTabs();
   return (
     <div className="bg-muted rounded-md py-2">
       <form onSubmit={onSubmit}>
