@@ -24,6 +24,20 @@ export default function UserInput({
   initialValue = '',
 }: UserInputProps) {
   const [inputValue, setInputValue] = useState<string>(initialValue);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey && isActive && inputValue.trim()) {
+      e.preventDefault();
+      const form = e.currentTarget.form;
+      if (form) {
+        const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+        form.dispatchEvent(submitEvent);
+      }
+    }
+  };
+
+  const hasText = inputValue.trim().length > 0;
+
   return (
     <div className={cn('bg-background rounded-md pt-2 pb-1', !isActive && 'pb-2')}>
       <form
@@ -61,6 +75,7 @@ export default function UserInput({
             onChange={e => {
               setInputValue(e.target.value);
             }}
+            onKeyDown={handleKeyDown}
           />
         </div>
         {isActive && (
@@ -83,7 +98,10 @@ export default function UserInput({
               <button
                 type="submit"
                 key="submit"
-                className="w-5 h-5 p-0 rounded-full cursor-pointer flex items-center justify-center text-primary-foreground bg-primary/80 hover:bg-primary hover:scale-110 transition-all duration-200">
+                className={cn(
+                  'w-5 h-5 p-0 rounded-full cursor-pointer flex items-center justify-center text-primary-foreground hover:scale-110 transition-all duration-200',
+                  hasText ? 'bg-primary/80 hover:bg-primary' : 'bg-primary/20 hover:bg-primary/40',
+                )}>
                 <ArrowUpIcon strokeWidth={2} className="size-3" />
               </button>
             )}
