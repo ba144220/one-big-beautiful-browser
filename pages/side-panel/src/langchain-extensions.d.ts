@@ -4,6 +4,7 @@ declare module '@langchain/langgraph-sdk' {
     tabId: number;
     tabTitle: string;
     tabFaviconUrl: string;
+    tabUrl: string;
   };
   type MessageContentImageUrl = {
     type: 'image_url';
