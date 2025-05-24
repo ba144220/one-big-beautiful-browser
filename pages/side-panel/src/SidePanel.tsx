@@ -1,8 +1,9 @@
 import '@src/SidePanel.css';
 import { withErrorBoundary, withSuspense } from '@extension/shared';
 import { SignedIn, SignedOut } from '@clerk/chrome-extension';
-import Chatroom from './pages/Chatroom';
-import Signin from './pages/Signin';
+import Chatroom from './pages/chatroom';
+import Signin from './pages/signin';
+import { SelectedTabsProvider } from './hooks/use-selected-tabs';
 const SidePanel = () => {
   return (
     <>
@@ -10,7 +11,9 @@ const SidePanel = () => {
         <Signin />
       </SignedOut>
       <SignedIn>
-        <Chatroom />
+        <SelectedTabsProvider>
+          <Chatroom />
+        </SelectedTabsProvider>
       </SignedIn>
     </>
   );
