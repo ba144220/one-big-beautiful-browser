@@ -328,35 +328,20 @@ export async function scrollToElement(tabId: number, selector: string): Promise<
     await attachDebugger(tabId);
 
     const element = await findElement(tabId, selector);
-    if (!element) {
-      return [{ type: 'text', text: `Error: Element not found: ${selector}` }];
+    if (!element || !element.boundingBox) {
+      return [{ type: 'text', text: `Error: Element not found or not visible: ${selector}` }];
     }
 
-    // Enable Runtime domain to execute JavaScript
-    await sendCDPCommand(tabId, 'Runtime.enable');
+    // Enable DOM domain
+    await sendCDPCommand(tabId, 'DOM.enable');
 
-    // Scroll element into view using JavaScript
-    const script = `
-      (function() {
-        const element = document.querySelector('${selector.replace(/'/g, "\\'")}')
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          return 'success';
-        }
-        return 'element not found';
-      })()
-    `;
-
-    const result = await sendCDPCommand(tabId, 'Runtime.evaluate', {
-      expression: script,
-      returnByValue: true,
+    // Use DOM.scrollIntoViewIfNeeded to scroll the element into view
+    await sendCDPCommand(tabId, 'DOM.scrollIntoViewIfNeeded', {
+      nodeId: element.nodeId,
+      centerIfNeeded: true,
     });
 
-    if (result.result.value === 'success') {
-      return [{ type: 'text', text: `Successfully scrolled to element: ${selector}` }];
-    } else {
-      return [{ type: 'text', text: `Error: Could not scroll to element: ${selector}` }];
-    }
+    return [{ type: 'text', text: `Successfully scrolled to element: ${selector}` }];
   } catch (error) {
     console.error('Error scrolling to element:', error);
     return [
@@ -518,43 +503,35 @@ export async function getElementInfo(tabId: number, selector: string): Promise<M
       return [{ type: 'text', text: `Error: Element not found: ${selector}` }];
     }
 
-    // Get additional element properties using JavaScript
-    await sendCDPCommand(tabId, 'Runtime.enable');
-
-    const script = `
-      (function() {
-        const element = document.querySelector('${selector.replace(/'/g, "\\'")}')
-        if (!element) return null;
-        
-        return {
-          tagName: element.tagName.toLowerCase(),
-          id: element.id || '',
-          className: element.className || '',
-          textContent: element.textContent?.trim() || '',
-          value: element.value || '',
-          href: element.href || '',
-          src: element.src || '',
-          alt: element.alt || '',
-          title: element.title || '',
-          placeholder: element.placeholder || '',
-          disabled: element.disabled || false,
-          checked: element.checked || false,
-          selected: element.selected || false,
-          visible: element.offsetParent !== null,
-          rect: element.getBoundingClientRect()
-        };
-      })()
-    `;
-
-    const result = await sendCDPCommand(tabId, 'Runtime.evaluate', {
-      expression: script,
-      returnByValue: true,
+    // Get element attributes using DOM.getAttributes
+    const attributes = await sendCDPCommand(tabId, 'DOM.getAttributes', {
+      nodeId: element.nodeId,
     });
 
-    const elementData = result.result.value;
-    if (!elementData) {
-      return [{ type: 'text', text: `Error: Could not get element information: ${selector}` }];
+    // Convert attributes array to object
+    const attributeMap: Record<string, string> = {};
+    for (let i = 0; i < attributes.attributes.length; i += 2) {
+      attributeMap[attributes.attributes[i]] = attributes.attributes[i + 1] || '';
     }
+
+    // Get element properties from DOM
+    const elementData = {
+      tagName: element.nodeName.toLowerCase(),
+      id: attributeMap.id || '',
+      className: attributeMap.class || '',
+      textContent: '', // Will be empty as we can't get text content without JS
+      value: attributeMap.value || '',
+      href: attributeMap.href || '',
+      src: attributeMap.src || '',
+      alt: attributeMap.alt || '',
+      title: attributeMap.title || '',
+      placeholder: attributeMap.placeholder || '',
+      disabled: attributeMap.disabled !== undefined,
+      checked: attributeMap.checked !== undefined,
+      selected: attributeMap.selected !== undefined,
+      visible: element.boundingBox !== null,
+      rect: element.boundingBox || { x: 0, y: 0, width: 0, height: 0 },
+    };
 
     const info = [
       `Element Information for: ${selector}`,
