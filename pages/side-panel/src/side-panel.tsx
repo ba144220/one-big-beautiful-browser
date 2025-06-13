@@ -1,4 +1,4 @@
-import '@src/SidePanel.css';
+import '@src/side-panel.css';
 import { withErrorBoundary, withSuspense } from '@extension/shared';
 import { SignedIn, SignedOut } from '@clerk/chrome-extension';
 import Chatroom from './pages/chatroom';

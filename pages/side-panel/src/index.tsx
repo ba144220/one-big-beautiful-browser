@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import '@src/index.css';
-import SidePanel from '@src/SidePanel';
+import SidePanel from '@src/side-panel';
 import { ClerkProvider } from '@clerk/chrome-extension';
 
 const PUBLISHABLE_KEY = process.env.CEB_CLERK_PUBLISHABLE_KEY;
