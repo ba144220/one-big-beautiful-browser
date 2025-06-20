@@ -21,3 +21,12 @@ type MessageContentText = {
 
 type MessageContentComplex = MessageContentText | MessageContentImageUrl;
 export type MessageContent = string | MessageContentComplex[];
+
+export type Model =
+  | 'claude-3-5-sonnet-latest'
+  | 'claude-3-7-sonnet-latest'
+  | 'claude-3-5-haiku-latest'
+  | 'gpt-4.1-mini'
+  | 'gpt-4.1-nano';
+
+export type Mode = 'agent' | 'ask';

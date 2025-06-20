@@ -10,13 +10,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@langchain/anthropic": "^0.3.20",
-    "@langchain/core": "^0.3.56",
-    "@langchain/langgraph": "^0.2.72",
+    "@langchain/anthropic": "^0.3.22",
+    "@langchain/core": "^0.3.59",
+    "@langchain/langgraph": "^0.2.74",
     "@langchain/langgraph-checkpoint": "^0.0.17",
     "@langchain/langgraph-cli": "^0.0.37",
     "@langchain/langgraph-sdk": "^0.0.78",
-    "zod": "^3.25.9"
+    "@langchain/openai": "^0.5.13",
+    "zod": "^3.25.67"
   },
   "devDependencies": {
     "@extension/shared": "workspace:*"

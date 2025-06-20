@@ -1,10 +1,10 @@
 // npm install @langchain-anthropic
-import { agentTools, askTools } from './tools';
+// import { agentTools, askTools } from './tools';
 import { MessagesAnnotation, StateGraph } from '@langchain/langgraph';
 import type { RunnableConfig } from '@langchain/core/runnables';
 import { ConfigurationSchema, ensureConfiguration, loadChatModel } from './utils';
 import { type AIMessage } from '@langchain/core/messages';
-import { ToolNode } from '@langchain/langgraph/prebuilt';
+// import { ToolNode } from '@langchain/langgraph/prebuilt';
 import { MemorySaver } from '@langchain/langgraph-checkpoint';
 
 const checkpointer = new MemorySaver();
@@ -14,8 +14,9 @@ async function callModel(
   config: RunnableConfig,
 ): Promise<typeof MessagesAnnotation.Update> {
   const configuration = ensureConfiguration(config);
-  const tools = configuration.mode === 'agent' ? agentTools : askTools;
-  const model = loadChatModel(configuration.model).bindTools(tools);
+  // const tools = configuration.mode === 'agent' ? agentTools : askTools;
+  // const model = loadChatModel(configuration.model).bindTools(tools);
+  const model = loadChatModel(configuration.model);
 
   const response = await model.invoke([
     {
@@ -50,8 +51,8 @@ function routeModelOutput(state: typeof MessagesAnnotation.State, config: Runnab
 const workflow = new StateGraph(MessagesAnnotation, ConfigurationSchema)
   // Define the nodes
   .addNode('callModel', callModel)
-  .addNode('ask_tools', new ToolNode(askTools))
-  .addNode('agent_tools', new ToolNode(agentTools))
+  // .addNode('ask_tools', new ToolNode(askTools))
+  // .addNode('agent_tools', new ToolNode(agentTools))
   // Set the entrypoint as `callModel`
   // This means that this node is the first one called
   .addEdge('__start__', 'callModel')
@@ -62,10 +63,10 @@ const workflow = new StateGraph(MessagesAnnotation, ConfigurationSchema)
     // Next, we pass in the function that will determine the sink node(s), which
     // will be called after the source node is called.
     routeModelOutput,
-  )
-  // This means that after `tools` is called, `callModel` node is called next.
-  .addEdge('ask_tools', 'callModel')
-  .addEdge('agent_tools', 'callModel');
+  );
+// This means that after `tools` is called, `callModel` node is called next.
+// .addEdge('ask_tools', 'callModel')
+// .addEdge('agent_tools', 'callModel');
 
 // Finally, we compile it!
 // This compiles it into a graph you can invoke and deploy.
