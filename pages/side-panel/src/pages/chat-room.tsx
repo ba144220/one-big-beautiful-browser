@@ -8,6 +8,8 @@ import type { Model, Mode } from '@extension/shared';
 export default function Chatroom() {
   const [model, setModel] = useState<Model>('claude-3-5-sonnet-latest');
   const [mode, setMode] = useState<Mode>('ask');
+
+  const [darkMode, setDarkMode] = useState(false);
   const thread = useStream<
     { messages: Message[] },
     {
@@ -23,7 +25,17 @@ export default function Chatroom() {
     messagesKey: 'messages',
   });
   return (
-    <div className="h-screen flex flex-col overflow-hidden bg-muted">
+    <div className={`h-screen flex flex-col overflow-hidden ${darkMode ? 'dark' : ''} bg-background text-foreground`}>
+      <div className="px-2 pb-2 flex items-center gap-2">
+        <input
+          type="checkbox"
+          name="darkMode"
+          id="darkMode"
+          checked={darkMode}
+          onChange={e => setDarkMode(e.target.checked)}
+        />
+        <label htmlFor="darkMode">Dark Mode</label>
+      </div>
       <div className="overflow-y-auto py-4 px-4 flex flex-col gap-2 flex-1">
         {thread.messages.map(message => (
           <div key={message.id}>
