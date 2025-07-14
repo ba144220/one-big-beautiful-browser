@@ -16,7 +16,7 @@
     "@langchain/langgraph-checkpoint": "^0.0.17",
     "@langchain/langgraph-cli": "^0.0.37",
     "@langchain/langgraph-sdk": "^0.0.78",
-    "zod": "^3.25.9"
+    "zod": "^4.0.5"
   },
   "devDependencies": {
     "@extension/shared": "workspace:*"

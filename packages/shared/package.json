@@ -26,6 +26,6 @@
     "@extension/tsconfig": "workspace:*"
   },
   "dependencies": {
-    "zod": "^3.25.9"
+    "zod": "^4.0.5"
   }
 }
