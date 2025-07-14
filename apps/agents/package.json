@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@langchain/anthropic": "^0.3.20",
+    "@langchain/anthropic": "^0.3.24",
     "@langchain/core": "^0.3.56",
     "@langchain/langgraph": "^0.2.72",
     "@langchain/langgraph-checkpoint": "^0.0.17",
